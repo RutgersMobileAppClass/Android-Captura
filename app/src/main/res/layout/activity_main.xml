@@ -31,7 +31,7 @@
         android:text="Take a Photo"
         android:id="@+id/takePhotoButton"
         android:layout_gravity="center"
-        android:onClick="takePhotoClick"/>
+        />
 
     <Button
         android:layout_width="wrap_content"
@@ -39,6 +39,9 @@
         android:text="Choose Existing Photo"
         android:id="@+id/choosePhotoButton"
         android:layout_gravity="center"
-        android:onClick="choosePhotoClick" />
+        />
 
 </LinearLayout>
+
+
+
