@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
             }
             else
             {
-                Toast.makeText(getApplicationContext(), "Need to enable Camera Permissions!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Need to enable Permissions!", Toast.LENGTH_LONG).show();
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
             }
         }
