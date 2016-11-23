@@ -1,12 +1,17 @@
 package finalproject.mobileappclass.com.captura;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.os.Build;
+import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 
@@ -22,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean permissionsGranted = false;
     private static final int PERMISSIONS_REQUEST_CODE = 100;
+    private static final int IMG_CAPTURE_REQUEST_CODE = 200;
+    private ImageView imageView;
 
 
     @Override
@@ -32,9 +39,28 @@ public class MainActivity extends AppCompatActivity {
         checkAndRequestPermissions();
 
 
-        
-    }
+        Button takePhotoButton = (Button) findViewById(R.id.takePhotoButton);
+        imageView = (ImageView) findViewById(R.id.imageholder);
 
+        //If user wants to take an image from the camera
+        takePhotoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(permissionsGranted)
+                {
+                    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    if (takePictureIntent.resolveActivity(getPackageManager()) != null)
+                    {
+                        startActivityForResult(takePictureIntent, IMG_CAPTURE_REQUEST_CODE);
+                    }
+                }
+                else
+                {
+                    Toast.makeText(getApplicationContext(), "Need Permission To Use Camera", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
 
 
     public void checkAndRequestPermissions()
@@ -72,4 +98,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == IMG_CAPTURE_REQUEST_CODE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            imageView.setImageBitmap(imageBitmap);
+        }
+    }
 }
