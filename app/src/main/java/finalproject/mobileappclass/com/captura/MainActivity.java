@@ -43,6 +43,7 @@ import clarifai2.dto.input.image.ClarifaiImage;
 import clarifai2.dto.model.output.ClarifaiOutput;
 import clarifai2.dto.prediction.Concept;
 import finalproject.mobileappclass.com.captura.Credentials.CredentialFetcher;
+import finalproject.mobileappclass.com.captura.Credentials.ImageDetectionCredentialsWrapper;
 import finalproject.mobileappclass.com.captura.ImageHandling.ExifUtil;
 import finalproject.mobileappclass.com.captura.ImageHandling.RealPathUtil;
 import finalproject.mobileappclass.com.captura.Translation.GoogleTranslateWrapper;
@@ -69,6 +70,11 @@ public class MainActivity extends AppCompatActivity {
         imageView = (ImageView) findViewById(R.id.imageholder);
         Button uploadPhotoButton = (Button) findViewById(R.id.choosePhotoButton);
         Button recognizeImageButton = (Button) findViewById(R.id.recognize_image_button);
+
+        //Set adapter to the list view for Clarifai
+        conceptsListView = (ListView) findViewById(R.id.conceptsListView);
+        conceptsListViewAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
+        conceptsListView.setAdapter(conceptsListViewAdapter);
 
         //If user wants to take an image from the camera
         takePhotoButton.setOnClickListener(new View.OnClickListener() {
@@ -100,14 +106,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (hasTakenOrSelectedPhoto) {
-                    CredentialFetcher credentialFetcher = new CredentialFetcher();
+                    //Get credentials for Clarifai API
+                    CredentialFetcher credentialFetcher = new CredentialFetcher(getApplicationContext());
                     Properties properties = credentialFetcher.loadPropertiesFile("captura.properties");
                     String encodedClientId = properties.getProperty("clientid");
                     String encodedClientSecret = properties.getProperty("clientsecret");
                     String clientId = new String(Base64.decode(encodedClientId.getBytes(), Base64.DEFAULT));
                     String clientSecret = new String(Base64.decode(encodedClientSecret.getBytes(), Base64.DEFAULT));
 
-                    //Get image view's image as a byte array for Clarifai API usage
+                    //Get image view's image as a byte array for usage by the Clarifai API
                     imageView.setDrawingCacheEnabled(true);
                     imageView.buildDrawingCache();
                     Bitmap imageBitmap = imageView.getDrawingCache();
@@ -115,18 +122,9 @@ public class MainActivity extends AppCompatActivity {
                     imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
                     byte[] byteArray = stream.toByteArray();
 
-                    final ClarifaiClient client = new ClarifaiBuilder(clientId, clientSecret)
-                            //TODO: Research the below line to see if this applies for our app
-                            // .client(new OkHttpClient()) // OPTIONAL. Allows customization of OkHttp by the user
-                            .buildSync(); // or use .build() to get a Future<ClarifaiClient>
-                    final List<ClarifaiOutput<Concept>> predictionResults = client.getDefaultModels().generalModel() // You can also do client.getModelByID("id") to get custom models
-                            .predict()
-                            .withInputs(
-                                    ClarifaiInput.forImage(ClarifaiImage.of(byteArray))
-                            )
-                            .executeSync()
-                            .get();
-
+                    //Wrap into ImageDetectionCredentialsWrapper object
+                    ImageDetectionCredentialsWrapper imageDetectionWrapper = new ImageDetectionCredentialsWrapper(clientId, clientSecret, byteArray);
+                    new ImageDetectionTask().execute(imageDetectionWrapper);
                 }
                 else {
                     Toast.makeText(MainActivity.this, "Photo not taken or selected yet!", Toast.LENGTH_LONG).show();
@@ -227,6 +225,42 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+    private class ImageDetectionTask extends AsyncTask<ImageDetectionCredentialsWrapper, Void, List<ClarifaiOutput<Concept>>> {
+        @Override
+        protected void onPreExecute() {
+            conceptsListViewAdapter.clear();
+        }
+
+        @Override
+        protected List<ClarifaiOutput<Concept>> doInBackground(ImageDetectionCredentialsWrapper... wrappers) {
+            String clientId = wrappers[0].getClientId();
+            String clientSecret = wrappers[0].getClientSecret();
+            byte[] byteArray = wrappers[0].getImageByteArray();
+
+            final ClarifaiClient client = new ClarifaiBuilder(clientId, clientSecret)
+                    //TODO: Research the below line to see if this applies for our app
+                    // .client(new OkHttpClient()) // OPTIONAL. Allows customization of OkHttp by the user
+                    .buildSync(); // or use .build() to get a Future<ClarifaiClient>
+            final List<ClarifaiOutput<Concept>> predictionResults = client.getDefaultModels().generalModel() // You can also do client.getModelByID("id") to get custom models
+                    .predict()
+                    .withInputs(
+                            ClarifaiInput.forImage(ClarifaiImage.of(byteArray))
+                    )
+                    .executeSync()
+                    .get();
+
+            return predictionResults;
+        }
+
+        @Override
+        protected void onPostExecute(List<ClarifaiOutput<Concept>> list) {
+            for (ClarifaiOutput<Concept> concept: list) {
+                conceptsListViewAdapter.add(concept.toString());
+            }
+            Toast.makeText(getApplicationContext(), "Completed Clarifai image detection!", Toast.LENGTH_LONG).show();
+        }
+    }
 
 
     private class  GoogleTranslateTask extends AsyncTask<String, Void, String>
