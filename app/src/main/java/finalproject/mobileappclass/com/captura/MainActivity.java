@@ -1,14 +1,12 @@
 package finalproject.mobileappclass.com.captura;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
+import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -20,6 +18,7 @@ import android.widget.Toast;
 =======
 import android.util.Log;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -28,13 +27,13 @@ import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
+
 import android.view.View;
 
-import java.io.IOException;
-import java.io.InputStream;
 
 import finalproject.mobileappclass.com.captura.ImageHandling.ExifUtil;
 import finalproject.mobileappclass.com.captura.ImageHandling.RealPathUtil;
+import finalproject.mobileappclass.com.captura.Translation.GoogleTranslateWrapper;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -80,6 +79,20 @@ public class MainActivity extends AppCompatActivity {
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(intent, "Select Picture"), IMG_UPLOAD_REQUEST_CODE);
+            }
+        });
+
+
+        //translation testing
+        final EditText inputText = (EditText) findViewById(R.id.input_field) ;
+        final EditText inputCode = (EditText) findViewById(R.id.inputlang_code);
+        final EditText outputCode = (EditText) findViewById(R.id.outputlang_code);
+        Button translateButton = (Button) findViewById(R.id.translate_button);
+        translateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view)
+            {
+                new GoogleTranslateTask().execute(inputText.getText().toString(), inputCode.getText().toString(), outputCode.getText().toString());
             }
         });
     }
@@ -161,4 +174,38 @@ public class MainActivity extends AppCompatActivity {
         imageView.setImageBitmap(b);
 
     }
+
+    private class  GoogleTranslateTask extends AsyncTask<String, Void, String>
+    {
+        @Override
+        protected String doInBackground(String... strings)
+        {
+            GoogleTranslateWrapper googleTranslateWrapper = new GoogleTranslateWrapper(getApplicationContext());
+            return googleTranslateWrapper.translate(strings[0], strings[1], strings[2]);
+        }
+
+        @Override
+        protected void onPostExecute(String s)
+        {
+            Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    /*
+    private class  GoogleTranslateTask extends AsyncTask<Void, Void, String>
+    {
+        @Override
+        protected String doInBackground(Void... voids)
+        {
+            GoogleTranslateWrapper googleTranslateWrapper = new GoogleTranslateWrapper(getApplicationContext());
+            return googleTranslateWrapper.translate("Hello", "en", "fr");
+        }
+
+        @Override
+        protected void onPostExecute(String s)
+        {
+            Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
+        }
+    }
+    */
 }
