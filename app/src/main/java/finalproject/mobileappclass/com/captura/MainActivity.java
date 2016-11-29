@@ -225,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
+    //TODO: Check if async execution of Clarifai predict() API can replace this asynctask
     private class ImageDetectionTask extends AsyncTask<ImageDetectionCredentialsWrapper, Void, List<ClarifaiOutput<Concept>>> {
         @Override
         protected void onPreExecute() {
@@ -255,8 +255,12 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(List<ClarifaiOutput<Concept>> list) {
+            /*int counter = 1;*/
             for (ClarifaiOutput<Concept> concept: list) {
-                conceptsListViewAdapter.add(concept.toString());
+                for (Concept c: concept.data()) {
+                    conceptsListViewAdapter.add(c.name() + ", " + c.value()/* + "\t" + counter*/);
+                }
+                /*counter++;*/
             }
             Toast.makeText(getApplicationContext(), "Completed Clarifai image detection!", Toast.LENGTH_LONG).show();
         }
