@@ -174,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.action_settings:
 
-                View settingsItem = findViewById(R.id.action_settings);
+                final View settingsItem = findViewById(R.id.action_settings);
                 Toast.makeText(MainActivity.this, "Select a language to learn", Toast.LENGTH_SHORT).show();
 
                 //Creating the instance of PopupMenu
@@ -190,6 +190,7 @@ public class MainActivity extends AppCompatActivity {
 
                         PrefSingleton.getInstance().writePreference("language", (String) item.getTitleCondensed());
                         Toast.makeText(MainActivity.this, "You are now learning " + item.getTitle(), Toast.LENGTH_SHORT).show();
+                        //invalidateOptionsMenu();
                         return true;
                     }
                 });
@@ -279,13 +280,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static void saveWords(String inputWord, String outputWord, String languageCode) {
-        if(words.isEmpty()){
+        if(PrefSingleton.getInstance().readPreference("inputWords") == null){
             PrefSingleton.getInstance().writePreference("inputWords", inputWord);
             PrefSingleton.getInstance().writePreference("outputWords", outputWord);
             PrefSingleton.getInstance().writePreference("languageCodes", languageCode);
-            words.put(inputWord, 1);
-        }else if(!words.containsKey(inputWord)){
-            words.put(inputWord, 1);
+            words.put(outputWord, 1);
+        }else if(!words.containsKey(outputWord)){
+            fixHashMap();
+            words.put(outputWord, 1);
             String inputs = PrefSingleton.getInstance().readPreference("inputWords");
             inputs = inputs + " " + inputWord;
             String outputs = PrefSingleton.getInstance().readPreference("outputWords");
@@ -297,6 +299,24 @@ public class MainActivity extends AppCompatActivity {
             PrefSingleton.getInstance().writePreference("languageCodes", codes);
         }
 
+    }
+
+    public static void fixHashMap(){
+        if(words.isEmpty() && PrefSingleton.getInstance().readPreference("outputWords") != null){
+            String[] outputWords = PrefSingleton.getInstance().readPreference("outputWords").split(" ");
+            for(String word : outputWords){
+                words.put(word, 1);
+            }
+        }
+    }
+
+    public static void resetHistory(){
+        if(!words.isEmpty()){
+            words.clear();
+            PrefSingleton.getInstance().writePreference("inputWords", null);
+            PrefSingleton.getInstance().writePreference("outputWords", null);
+            PrefSingleton.getInstance().writePreference("languageCodes", null);
+        }
     }
 
     //TODO: Check if async execution of Clarifai predict() API can replace this asynctask
