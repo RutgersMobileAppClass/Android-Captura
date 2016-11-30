@@ -35,6 +35,7 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Array;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 
@@ -53,7 +54,7 @@ import finalproject.mobileappclass.com.captura.Translation.GoogleTranslateWrappe
 
 public class MainActivity extends AppCompatActivity {
 
-    PrefSingleton prefSingleton;
+    PrefSingleton prefSingleton; //global shared preferences
     private boolean permissionsGranted = false;
     private boolean hasTakenOrSelectedPhoto = false;
     private static final int PERMISSIONS_REQUEST_CODE = 100;
@@ -62,6 +63,10 @@ public class MainActivity extends AppCompatActivity {
     private ImageView imageView;
     private ListView conceptsListView;
     private ArrayAdapter<String> conceptsListViewAdapter;
+    private static HashMap<String, Integer> words = new HashMap<>();
+    private String inputWord;
+    private String outputWord;
+    private String languageCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,10 +77,12 @@ public class MainActivity extends AppCompatActivity {
         prefSingleton = PrefSingleton.getInstance();
         prefSingleton.init(getApplicationContext());
 
-        if(PrefSingleton.getInstance().readPreference("language") == null){
+        //default to english if no language is selected
+        if (PrefSingleton.getInstance().readPreference("language") == null) {
             PrefSingleton.getInstance().writePreference("language", "en");
         }
 
+        //Buttons for dayyyyyz
         Button takePhotoButton = (Button) findViewById(R.id.takePhotoButton);
         imageView = (ImageView) findViewById(R.id.imageholder);
         Button uploadPhotoButton = (Button) findViewById(R.id.choosePhotoButton);
@@ -135,32 +142,31 @@ public class MainActivity extends AppCompatActivity {
                     //Wrap into ImageDetectionCredentialsWrapper object
                     ImageDetectionCredentialsWrapper imageDetectionWrapper = new ImageDetectionCredentialsWrapper(clientId, clientSecret, byteArray);
                     new ImageDetectionTask().execute(imageDetectionWrapper);
-                }
-                else {
+                } else {
                     Toast.makeText(MainActivity.this, "Photo not taken or selected yet!", Toast.LENGTH_LONG).show();
                 }
             }
         });
 
         //translation testing
-        final EditText inputText = (EditText) findViewById(R.id.input_field) ;
+        final EditText inputText = (EditText) findViewById(R.id.input_field);
         Button translateButton = (Button) findViewById(R.id.translate_button);
         translateButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
+            public void onClick(View view) {
                 new GoogleTranslateTask().execute(inputText.getText().toString(), "en", PrefSingleton.getInstance().readPreference("language"));
             }
         });
     }
 
-
+    //add language menu to top right
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.options_menu, menu);
         return true;
     }
 
+    //when language button is clicked
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -232,8 +238,7 @@ public class MainActivity extends AppCompatActivity {
         } else if (requestCode == IMG_UPLOAD_REQUEST_CODE && resultCode == RESULT_OK) {
             Uri imageUri = data.getData();
 
-            try
-            {
+            try {
                 decodeFile(RealPathUtil.getRealPathFromURI_API19(getApplicationContext(), imageUri));
                 hasTakenOrSelectedPhoto = true;
             } catch (Exception e) {
@@ -273,6 +278,27 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public static void saveWords(String inputWord, String outputWord, String languageCode) {
+        if(words.isEmpty()){
+            PrefSingleton.getInstance().writePreference("inputWords", inputWord);
+            PrefSingleton.getInstance().writePreference("outputWords", outputWord);
+            PrefSingleton.getInstance().writePreference("languageCodes", languageCode);
+            words.put(inputWord, 1);
+        }else if(!words.containsKey(inputWord)){
+            words.put(inputWord, 1);
+            String inputs = PrefSingleton.getInstance().readPreference("inputWords");
+            inputs = inputs + " " + inputWord;
+            String outputs = PrefSingleton.getInstance().readPreference("outputWords");
+            outputs = outputs + " " + outputWord;
+            String codes = PrefSingleton.getInstance().readPreference("languageCodes");
+            codes = codes + " " + languageCode;
+            PrefSingleton.getInstance().writePreference("inputWords", inputs);
+            PrefSingleton.getInstance().writePreference("outputWords", outputs);
+            PrefSingleton.getInstance().writePreference("languageCodes", codes);
+        }
+
+    }
+
     //TODO: Check if async execution of Clarifai predict() API can replace this asynctask
     private class ImageDetectionTask extends AsyncTask<ImageDetectionCredentialsWrapper, Void, List<ClarifaiOutput<Concept>>> {
         @Override
@@ -304,8 +330,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(List<ClarifaiOutput<Concept>> list) {
             /*int counter = 1;*/
-            for (ClarifaiOutput<Concept> concept: list) {
-                for (Concept c: concept.data()) {
+            for (ClarifaiOutput<Concept> concept : list) {
+                for (Concept c : concept.data()) {
                     conceptsListViewAdapter.add(c.name() + ", " + c.value()/* + "\t" + counter*/);
                 }
                 /*counter++;*/
@@ -315,21 +341,41 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private class  GoogleTranslateTask extends AsyncTask<String, Void, String>
-    {
+    private class GoogleTranslateTask extends AsyncTask<String, Void, String> {
         @Override
-        protected String doInBackground(String... strings)
-        {
+        protected String doInBackground(String... strings) {
             GoogleTranslateWrapper googleTranslateWrapper = new GoogleTranslateWrapper(getApplicationContext());
+            inputWord = strings[0];
             return googleTranslateWrapper.translate(strings[0], strings[1], strings[2]);
         }
 
         @Override
-        protected void onPostExecute(String s)
-        {
+        protected void onPostExecute(String s) {
+            outputWord = s;
+            saveWords(inputWord, s, PrefSingleton.getInstance().readPreference("language"));
             Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
+            Log.d("Inputs", PrefSingleton.getInstance().readPreference("inputWords"));
+            Log.d("Outputs", PrefSingleton.getInstance().readPreference("outputWords"));
+            Log.d("Language Codes", PrefSingleton.getInstance().readPreference("languageCodes"));
+
         }
+
     }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /*
     private class  GoogleTranslateTask extends AsyncTask<Void, Void, String>
@@ -348,4 +394,3 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     */
-}
