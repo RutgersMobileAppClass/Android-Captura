@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/en"
+        android:title="English"
+        android:checkable="false" />
+    <item
+        android:id="@+id/fr"
+        android:titleCondensed="fr"
+        android:title="French"
+        android:checkable="false" />
+    <item
+        android:id="@+id/de"
+        android:titleCondensed="de"
+        android:title="German"
+        android:checkable="false" />
+    <item
+        android:id="@+id/ru"
+        android:titleCondensed="ru"
+        android:title="Russian"
+        android:checkable="false" />
+    <item
+        android:id="@+id/es"
+        android:titleCondensed="es"
+        android:title="Spanish"
+        android:checkable="false" />
+
+</menu>
