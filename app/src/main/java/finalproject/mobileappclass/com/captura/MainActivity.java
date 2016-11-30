@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_settings:
 
                 View settingsItem = findViewById(R.id.action_settings);
-                Toast.makeText(MainActivity.this, "Select a language to learn", Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "Select a language to learn", Toast.LENGTH_SHORT).show();
 
                 //Creating the instance of PopupMenu
                 PopupMenu popup = new PopupMenu(MainActivity.this, settingsItem);
