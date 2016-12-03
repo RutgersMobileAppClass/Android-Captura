@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
@@ -12,7 +13,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Base64;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -21,29 +21,13 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
+
 
 
 import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-
-
-import android.view.View;
-
-
-import java.io.ByteArrayOutputStream;
-import java.util.List;
-import java.util.Properties;
-
-import clarifai2.api.ClarifaiBuilder;
-import clarifai2.api.ClarifaiClient;
-import clarifai2.dto.input.ClarifaiInput;
-import clarifai2.dto.input.image.ClarifaiImage;
-import clarifai2.dto.model.output.ClarifaiOutput;
-import clarifai2.dto.prediction.Concept;
-import finalproject.mobileappclass.com.captura.Credentials.CredentialFetcher;
-import finalproject.mobileappclass.com.captura.Credentials.ImageDetectionCredentialsWrapper;
+import finalproject.mobileappclass.com.captura.ImageHandling.CloudVisionWrapper;
 import finalproject.mobileappclass.com.captura.ImageHandling.ExifUtil;
 import finalproject.mobileappclass.com.captura.ImageHandling.RealPathUtil;
 import finalproject.mobileappclass.com.captura.Translation.GoogleTranslateWrapper;
@@ -105,26 +89,9 @@ public class MainActivity extends AppCompatActivity {
         recognizeImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (hasTakenOrSelectedPhoto) {
-                    //Get credentials for Clarifai API
-                    CredentialFetcher credentialFetcher = new CredentialFetcher(getApplicationContext());
-                    Properties properties = credentialFetcher.loadPropertiesFile("captura.properties");
-                    String encodedClientId = properties.getProperty("clientid");
-                    String encodedClientSecret = properties.getProperty("clientsecret");
-                    String clientId = new String(Base64.decode(encodedClientId.getBytes(), Base64.DEFAULT));
-                    String clientSecret = new String(Base64.decode(encodedClientSecret.getBytes(), Base64.DEFAULT));
-
-                    //Get image view's image as a byte array for usage by the Clarifai API
-                    imageView.setDrawingCacheEnabled(true);
-                    imageView.buildDrawingCache();
-                    Bitmap imageBitmap = imageView.getDrawingCache();
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                    byte[] byteArray = stream.toByteArray();
-
-                    //Wrap into ImageDetectionCredentialsWrapper object
-                    ImageDetectionCredentialsWrapper imageDetectionWrapper = new ImageDetectionCredentialsWrapper(clientId, clientSecret, byteArray);
-                    new ImageDetectionTask().execute(imageDetectionWrapper);
+                if (hasTakenOrSelectedPhoto)
+                {
+                    new ImageRecognitionTask().execute(((BitmapDrawable)imageView.getDrawable()).getBitmap());
                 }
                 else {
                     Toast.makeText(MainActivity.this, "Photo not taken or selected yet!", Toast.LENGTH_LONG).show();
@@ -225,47 +192,20 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    //TODO: Check if async execution of Clarifai predict() API can replace this asynctask
-    private class ImageDetectionTask extends AsyncTask<ImageDetectionCredentialsWrapper, Void, List<ClarifaiOutput<Concept>>> {
+    private class ImageRecognitionTask extends AsyncTask<Bitmap, Void, String>
+    {
         @Override
-        protected void onPreExecute() {
-            conceptsListViewAdapter.clear();
+        protected String doInBackground(Bitmap... bitmaps)
+        {
+            CloudVisionWrapper cloudVisionWrapper = new CloudVisionWrapper(bitmaps[0], getApplicationContext());
+            return cloudVisionWrapper.performImageRecognition();
         }
 
         @Override
-        protected List<ClarifaiOutput<Concept>> doInBackground(ImageDetectionCredentialsWrapper... wrappers) {
-            String clientId = wrappers[0].getClientId();
-            String clientSecret = wrappers[0].getClientSecret();
-            byte[] byteArray = wrappers[0].getImageByteArray();
-
-            final ClarifaiClient client = new ClarifaiBuilder(clientId, clientSecret)
-                    //TODO: Research the below line to see if this applies for our app
-                    // .client(new OkHttpClient()) // OPTIONAL. Allows customization of OkHttp by the user
-                    .buildSync(); // or use .build() to get a Future<ClarifaiClient>
-            final List<ClarifaiOutput<Concept>> predictionResults = client.getDefaultModels().generalModel() // You can also do client.getModelByID("id") to get custom models
-                    .predict()
-                    .withInputs(
-                            ClarifaiInput.forImage(ClarifaiImage.of(byteArray))
-                    )
-                    .executeSync()
-                    .get();
-
-            return predictionResults;
-        }
-
-        @Override
-        protected void onPostExecute(List<ClarifaiOutput<Concept>> list) {
-            /*int counter = 1;*/
-            for (ClarifaiOutput<Concept> concept: list) {
-                for (Concept c: concept.data()) {
-                    conceptsListViewAdapter.add(c.name() + ", " + c.value()/* + "\t" + counter*/);
-                }
-                /*counter++;*/
-            }
-            Toast.makeText(getApplicationContext(), "Completed Clarifai image detection!", Toast.LENGTH_LONG).show();
+        protected void onPostExecute(String s) {
+            Log.v("AndroidCaptura", s);
         }
     }
-
 
     private class  GoogleTranslateTask extends AsyncTask<String, Void, String>
     {
