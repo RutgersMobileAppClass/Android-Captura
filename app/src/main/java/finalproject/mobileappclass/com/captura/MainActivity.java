@@ -13,6 +13,11 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import android.support.v7.widget.PopupMenu;
+import android.view.Menu;
+import android.view.MenuItem;
+
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -23,18 +28,18 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 
-
 import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import finalproject.mobileappclass.com.captura.ImageHandling.CloudVisionWrapper;
 import finalproject.mobileappclass.com.captura.ImageHandling.ExifUtil;
 import finalproject.mobileappclass.com.captura.ImageHandling.RealPathUtil;
+import finalproject.mobileappclass.com.captura.SharedPreferencesHelper.PrefSingleton;
 import finalproject.mobileappclass.com.captura.Translation.GoogleTranslateWrapper;
 
 public class MainActivity extends AppCompatActivity {
 
-
+    PrefSingleton prefSingleton;
     private boolean permissionsGranted = false;
     private boolean hasTakenOrSelectedPhoto = false;
     private static final int PERMISSIONS_REQUEST_CODE = 100;
@@ -49,6 +54,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         checkAndRequestPermissions();
+
+        prefSingleton = PrefSingleton.getInstance();
+        prefSingleton.init(getApplicationContext());
+
+        if(PrefSingleton.getInstance().readPreference("language") == null){
+            PrefSingleton.getInstance().writePreference("language", "en");
+        }
 
         Button takePhotoButton = (Button) findViewById(R.id.takePhotoButton);
         imageView = (ImageView) findViewById(R.id.imageholder);
@@ -101,16 +113,54 @@ public class MainActivity extends AppCompatActivity {
 
         //translation testing
         final EditText inputText = (EditText) findViewById(R.id.input_field) ;
-        final EditText inputCode = (EditText) findViewById(R.id.inputlang_code);
-        final EditText outputCode = (EditText) findViewById(R.id.outputlang_code);
         Button translateButton = (Button) findViewById(R.id.translate_button);
         translateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view)
             {
-                new GoogleTranslateTask().execute(inputText.getText().toString(), inputCode.getText().toString(), outputCode.getText().toString());
+                new GoogleTranslateTask().execute(inputText.getText().toString(), "en", PrefSingleton.getInstance().readPreference("language"));
             }
         });
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.options_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+
+            case R.id.action_settings:
+
+                View settingsItem = findViewById(R.id.action_settings);
+                Toast.makeText(MainActivity.this, "Select a language to learn", Toast.LENGTH_SHORT).show();
+
+                //Creating the instance of PopupMenu
+                PopupMenu popup = new PopupMenu(MainActivity.this, settingsItem);
+
+                //Inflating the Popup using xml file
+                popup.getMenuInflater().inflate(R.menu.popupmenu, popup.getMenu());
+
+                //registering popup with OnMenuItemClickListener
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+
+                    public boolean onMenuItemClick(MenuItem item) {
+
+                        PrefSingleton.getInstance().writePreference("language", (String) item.getTitleCondensed());
+                        Toast.makeText(MainActivity.this, "You are now learning " + item.getTitle(), Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
+                });
+                popup.show();
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 
@@ -222,22 +272,5 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
         }
     }
-
-    /*
-    private class  GoogleTranslateTask extends AsyncTask<Void, Void, String>
-    {
-        @Override
-        protected String doInBackground(Void... voids)
-        {
-            GoogleTranslateWrapper googleTranslateWrapper = new GoogleTranslateWrapper(getApplicationContext());
-            return googleTranslateWrapper.translate("Hello", "en", "fr");
-        }
-
-        @Override
-        protected void onPostExecute(String s)
-        {
-            Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
-        }
-    }
-    */
+    
 }
