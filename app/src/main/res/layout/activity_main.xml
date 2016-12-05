@@ -61,11 +61,13 @@
         android:id="@+id/db_button"
         android:layout_gravity="center"/>
 
-    <ListView
-        android:layout_width="match_parent"
+    <Button
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/conceptsListView">
-    </ListView>
+        android:text="Pronounciation"
+        android:id="@+id/tts_button"
+        android:layout_gravity="center"/>
+
 
     <EditText
         android:layout_width="wrap_content"

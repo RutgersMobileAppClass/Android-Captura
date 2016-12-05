@@ -9,6 +9,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
+import android.speech.tts.TextToSpeech;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -27,11 +28,14 @@ import android.widget.ImageView;
 
 
 import java.util.ArrayList;
+import java.util.Locale;
+import java.util.Set;
 
 import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-
+import static finalproject.mobileappclass.com.captura.R.id.takePhotoButton;
+import static finalproject.mobileappclass.com.captura.R.id.te;
 
 
 import finalproject.mobileappclass.com.captura.DatabaseHelper.CapturaDatabaseHelper;
@@ -44,7 +48,7 @@ import finalproject.mobileappclass.com.captura.Models.TranslationRequest;
 import finalproject.mobileappclass.com.captura.SharedPreferencesHelper.PrefSingleton;
 import finalproject.mobileappclass.com.captura.Translation.GoogleTranslateWrapper;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements TextToSpeech.OnInitListener{
 
     PrefSingleton prefSingleton;
     private boolean permissionsGranted = false;
@@ -53,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
     private static final int IMG_CAPTURE_REQUEST_CODE = 200;
     private static final int IMG_UPLOAD_REQUEST_CODE = 300;
     private ImageView imageView;
+    private TextToSpeech textToSpeech;
+    private String translatedWord;
 
 
     @Override
@@ -67,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         if(PrefSingleton.getInstance().readPreference("language") == null){
             PrefSingleton.getInstance().writePreference("language", "en");
         }
-
+        textToSpeech = new TextToSpeech(getApplicationContext(), this);
         Button takePhotoButton = (Button) findViewById(R.id.takePhotoButton);
         imageView = (ImageView) findViewById(R.id.imageholder);
         Button uploadPhotoButton = (Button) findViewById(R.id.choosePhotoButton);
@@ -172,6 +178,23 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+
+
+        Button ttsButton = (Button) findViewById(R.id.tts_button);
+        ttsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(translatedWord != null)
+                {
+                    textToSpeech.speak(translatedWord, TextToSpeech.QUEUE_FLUSH, null, null);
+                }
+                else
+                {
+                    Toast.makeText(getApplicationContext(), "You have not translated a word", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 
 
@@ -203,6 +226,8 @@ public class MainActivity extends AppCompatActivity {
                     public boolean onMenuItemClick(MenuItem item) {
 
                         PrefSingleton.getInstance().writePreference("language", (String) item.getTitleCondensed());
+                        textToSpeech.setLanguage(new Locale((String) item.getTitleCondensed()));
+                        setTextToSpeechLanguage();
                         Toast.makeText(MainActivity.this, "You are now learning " + item.getTitle(), Toast.LENGTH_SHORT).show();
                         return true;
                     }
@@ -320,7 +345,31 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s)
         {
+            translatedWord = s;
             Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void onInit(int status)
+    {
+        if(status == TextToSpeech.SUCCESS)
+        {
+            setTextToSpeechLanguage();
+        }
+    }
+
+    public void setTextToSpeechLanguage()
+    {
+        if(textToSpeech.isLanguageAvailable(new Locale(prefSingleton.readPreference("language"))) == TextToSpeech.LANG_AVAILABLE)
+        {
+            Toast.makeText(getApplicationContext(), "This language has TTS support", Toast.LENGTH_LONG).show();
+            textToSpeech.setLanguage(new Locale(prefSingleton.readPreference("language")));
+        }
+        else
+        {
+            Toast.makeText(getApplicationContext(), "This language does not have TTS support", Toast.LENGTH_LONG).show();
+            textToSpeech.setLanguage(Locale.US);
         }
     }
 
