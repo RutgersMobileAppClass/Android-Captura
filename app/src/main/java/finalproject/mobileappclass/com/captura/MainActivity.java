@@ -28,12 +28,19 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 
+import java.util.ArrayList;
+
 import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static finalproject.mobileappclass.com.captura.R.id.conceptsListView;
+
+import finalproject.mobileappclass.com.captura.DatabaseHelper.CapturaDatabaseHelper;
 import finalproject.mobileappclass.com.captura.ImageHandling.CloudVisionWrapper;
 import finalproject.mobileappclass.com.captura.ImageHandling.ExifUtil;
 import finalproject.mobileappclass.com.captura.ImageHandling.RealPathUtil;
+import finalproject.mobileappclass.com.captura.Models.QuizScore;
+import finalproject.mobileappclass.com.captura.Models.TranslationRequest;
 import finalproject.mobileappclass.com.captura.SharedPreferencesHelper.PrefSingleton;
 import finalproject.mobileappclass.com.captura.Translation.GoogleTranslateWrapper;
 
@@ -46,8 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int IMG_CAPTURE_REQUEST_CODE = 200;
     private static final int IMG_UPLOAD_REQUEST_CODE = 300;
     private ImageView imageView;
-    private ListView conceptsListView;
-    private ArrayAdapter<String> conceptsListViewAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,11 +72,6 @@ public class MainActivity extends AppCompatActivity {
         imageView = (ImageView) findViewById(R.id.imageholder);
         Button uploadPhotoButton = (Button) findViewById(R.id.choosePhotoButton);
         Button recognizeImageButton = (Button) findViewById(R.id.recognize_image_button);
-
-        //Set adapter to the list view for Clarifai
-        conceptsListView = (ListView) findViewById(R.id.conceptsListView);
-        conceptsListViewAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
-        conceptsListView.setAdapter(conceptsListViewAdapter);
 
         //If user wants to take an image from the camera
         takePhotoButton.setOnClickListener(new View.OnClickListener() {
@@ -119,6 +120,56 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view)
             {
                 new GoogleTranslateTask().execute(inputText.getText().toString(), "en", PrefSingleton.getInstance().readPreference("language"));
+            }
+        });
+
+        //test database stuff
+        Button databaseButton = (Button) findViewById(R.id.db_button);
+        databaseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CapturaDatabaseHelper capturaDatabaseHelper = CapturaDatabaseHelper.getInstance(getApplicationContext());
+                TranslationRequest translationRequest = new TranslationRequest("Hello", "Bonjour", "fr");
+                TranslationRequest translationRequest1 = new TranslationRequest("Hello", "Hola", "esp");
+
+                QuizScore quizScore = new QuizScore(10, "Test timestamp", "fr");
+                QuizScore quizScore1 = new QuizScore(10, "Test timestamp2", "esp");
+
+                //insert
+                capturaDatabaseHelper.insertTranslationRequest(translationRequest);
+                capturaDatabaseHelper.insertTranslationRequest(translationRequest);
+                capturaDatabaseHelper.insertTranslationRequest(translationRequest1);
+                capturaDatabaseHelper.insertTranslationRequest(translationRequest1);
+                capturaDatabaseHelper.insertQuizScore(quizScore);
+                capturaDatabaseHelper.insertQuizScore(quizScore1);
+
+                //query
+                ArrayList<TranslationRequest> requestList = capturaDatabaseHelper.getEntireHistory();
+                ArrayList<QuizScore> quizScoreArrayList = capturaDatabaseHelper.getAllScores();
+
+                for(TranslationRequest tr : requestList)
+                {
+                    Log.v("AndroidCaptura", tr.getInputWord() + " " + tr.getTranslatedWord() + " " + tr.getLanguageOfInterest());
+                }
+
+                for(QuizScore qs : quizScoreArrayList)
+                {
+                    Log.v("AndroidCaptura", ""+qs.getQuizScore() + " " + qs.getTimeStamp() + " " + qs.getLanguageOfInterest());
+                }
+
+                ArrayList<TranslationRequest> requestArrayList = capturaDatabaseHelper.findTranslationRequestsByLanguage("fr");
+                ArrayList<QuizScore> quizScores = capturaDatabaseHelper.findQuizScoresByLanguage("esp");
+
+                for(TranslationRequest t : requestArrayList)
+                {
+                    Log.v("AndroidCaptura", t.getInputWord() + " " + t.getTranslatedWord() + " " + t.getLanguageOfInterest());
+                }
+
+                for(QuizScore q : quizScores)
+                {
+                    Log.v("AndroidCaptura", ""+q.getQuizScore() + " " + q.getLanguageOfInterest() + " " + q.getTimeStamp());
+                }
+
             }
         });
     }
@@ -272,5 +323,5 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
         }
     }
-    
+
 }
