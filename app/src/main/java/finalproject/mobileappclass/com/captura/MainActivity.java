@@ -19,8 +19,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.Toast;
 import android.util.Log;
 import android.widget.Button;
@@ -33,10 +31,12 @@ import java.util.ArrayList;
 import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-import static finalproject.mobileappclass.com.captura.R.id.conceptsListView;
+
+
 
 import finalproject.mobileappclass.com.captura.DatabaseHelper.CapturaDatabaseHelper;
 import finalproject.mobileappclass.com.captura.ImageHandling.CloudVisionWrapper;
+
 import finalproject.mobileappclass.com.captura.ImageHandling.ExifUtil;
 import finalproject.mobileappclass.com.captura.ImageHandling.RealPathUtil;
 import finalproject.mobileappclass.com.captura.Models.QuizScore;
