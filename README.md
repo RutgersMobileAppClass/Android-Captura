@@ -13,9 +13,9 @@ Features to implements:<br>
 -Add barcharts to track quiz scores<br>
 
 Design Mockups:<br>
-![home](http://imgur.com/O8017ee)
-![translation](http://imgur.com/nMliEqt)
-![history](http://imgur.com/rPHD6ms)
-![quizzes](http://imgur.com/zkpBaiv)
-![new quiz](http://imgur.com/vij2o5F)
-![analytics](http://imgur.com/jTqkc3v)
+![home](http://imgur.com/O8017ee.png)
+![translation](http://imgur.com/nMliEqt.png)
+![history](http://imgur.com/rPHD6ms.png)
+![quizzes](http://imgur.com/zkpBaiv.png)
+![new quiz](http://imgur.com/vij2o5F.png)
+![analytics](http://imgur.com/jTqkc3v.png)
