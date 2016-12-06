@@ -1,0 +1,14 @@
+ <tabs>
+        <tab
+            id="@+id/tab_quizzes"
+            icon="@mipmap/ic_text_format_white_24dp"
+            title="Quizzes" />
+        <tab
+            id="@+id/tab_photo"
+            icon="@drawable/ic_camera_white"
+            />
+        <tab
+            id="@+id/tab_history"
+            icon="@mipmap/ic_access_time_white_24dp"
+            title="History" />
+ </tabs>

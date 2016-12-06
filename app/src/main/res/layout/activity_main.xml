@@ -68,13 +68,6 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Test History"
-            android:id="@+id/history_button"
-            android:layout_gravity="center"/>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:text="Pronounciation"
             android:id="@+id/tts_button"
             android:layout_gravity="center"/>
@@ -96,15 +89,13 @@
 
     </LinearLayout>
 
-    <android.support.design.widget.BottomNavigationView
-        android:id="@+id/bottom_navigation"
+    <com.roughike.bottombar.BottomBar
+        android:id="@+id/bottomBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_alignParentBottom="true"
-        app:itemBackground="@color/colorAccent"
-        app:itemIconTint="@drawable/nav_item_color_state"
-        app:itemTextColor="@drawable/nav_item_color_state"
-        app:menu="@menu/bottom_navigation_main" />
+        app:bb_tabXmlResource="@xml/bottombar_tabs" />
+
 
 </RelativeLayout>
 

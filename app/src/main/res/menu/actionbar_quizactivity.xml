@@ -1,0 +1,23 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <item android:id="@+id/action_newQuiz"
+        android:showAsAction="always"
+        android:icon="@drawable/ic_plus_white"
+
+        app:showAsAction="always" />
+
+    <item android:id="@+id/action_analytics"
+        android:showAsAction="always"
+        android:icon="@mipmap/ic_equalizer_black_24dp"
+
+        app:showAsAction="always" />
+
+    <item android:id="@+id/action_settings"
+        android:showAsAction="always"
+        android:icon="@drawable/ic_settings"
+
+        app:showAsAction="always" />
+
+</menu>
