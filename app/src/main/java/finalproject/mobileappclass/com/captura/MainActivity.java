@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.speech.tts.TextToSpeech;
+import android.support.annotation.IdRes;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -25,7 +26,8 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-
+import com.roughike.bottombar.BottomBar;
+import com.roughike.bottombar.OnTabSelectListener;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -75,6 +77,29 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         imageView = (ImageView) findViewById(R.id.imageholder);
         Button uploadPhotoButton = (Button) findViewById(R.id.choosePhotoButton);
         Button recognizeImageButton = (Button) findViewById(R.id.recognize_image_button);
+
+        BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
+        bottomBar.setDefaultTab(R.id.tab_photo);
+        bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
+            @Override
+            public void onTabSelected(@IdRes int tabId) {
+                if (tabId == R.id.tab_history) {
+                    // The tab with id R.id.tab_favorites was selected,
+                    // change your content accordingly.
+                    Intent intent = new Intent(getApplicationContext(), HistoryActivity.class);
+                    startActivity(intent);
+                }
+
+                if (tabId == R.id.tab_quizzes) {
+                    // The tab with id R.id.tab_favorites was selected,
+                    // change your content accordingly.
+                    Intent intent = new Intent(getApplicationContext(), QuizActivity.class);
+                    startActivity(intent);
+
+                }
+            }
+        });
+
 
         //If user wants to take an image from the camera
         takePhotoButton.setOnClickListener(new View.OnClickListener() {
@@ -126,14 +151,6 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             }
         });
 
-        Button historyButton = (Button) findViewById(R.id.history_button);
-        historyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
-                startActivity(intent);
-            }
-        });
 
         //test database stuff
         Button databaseButton = (Button) findViewById(R.id.db_button);
@@ -206,7 +223,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.options_menu, menu);
+        getMenuInflater().inflate(R.menu.actionbar_mainactivity, menu);
         return true;
     }
 

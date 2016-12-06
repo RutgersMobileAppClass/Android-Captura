@@ -3,9 +3,7 @@
 
     <item android:id="@+id/action_settings"
         android:showAsAction="always"
-        android:title="Language"
+        android:icon="@drawable/ic_settings"
 
         app:showAsAction="always" />
 </menu>
-
-    <!--android:icon="@android:drawable/ic_menu_preferences" -->
