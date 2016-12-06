@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
-    android:padding="21dp"
+    android:padding="16dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
@@ -33,13 +33,11 @@
 
     </LinearLayout>
 
-
-
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:gravity="center_vertical|center_horizontal"
-        android:paddingTop="42dp"
+        android:paddingTop="16dp"
         android:orientation="horizontal">
 
         <TextView
@@ -56,7 +54,6 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             app:srcCompat="@drawable/ic_swap_horiz_black_24dp"
-
             android:id="@+id/imageView" />
 
         <TextView

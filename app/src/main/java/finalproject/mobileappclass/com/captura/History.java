@@ -18,8 +18,8 @@ public class History extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        new DBLoadTask().execute();
         setContentView(R.layout.activity_history);
+        new DBLoadTask().execute();
 
         historyOfRequests = (ListView) findViewById(R.id.HistoryListView);
         adapter = new HistoryAdapter(this, requests);
@@ -27,11 +27,13 @@ public class History extends AppCompatActivity {
     }
 
     private class DBLoadTask extends AsyncTask<Void, Void, ArrayList<TranslationRequest>> {
+        ArrayList<TranslationRequest> translationRequests = new ArrayList<TranslationRequest>();
+
         @Override
         protected ArrayList<TranslationRequest> doInBackground(Void... voids) {
             CapturaDatabaseHelper dbHelper = CapturaDatabaseHelper.getInstance(getApplicationContext());
-            requests = dbHelper.getEntireHistory();
-            return requests;
+            translationRequests = dbHelper.getEntireHistory();
+            return translationRequests;
         }
 
         @Override

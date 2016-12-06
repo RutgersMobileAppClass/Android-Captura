@@ -16,11 +16,8 @@ import finalproject.mobileappclass.com.captura.Models.TranslationRequest;
  */
 
 public class HistoryAdapter extends ArrayAdapter<TranslationRequest> {
-    private ArrayList<TranslationRequest> requests;
-
     public HistoryAdapter(Context context, ArrayList<TranslationRequest> requests) {
         super(context, 0, requests);
-        this.requests = requests;
     }
 
     @Override
