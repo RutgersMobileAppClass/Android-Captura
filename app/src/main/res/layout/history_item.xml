@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:padding="21dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center_vertical|center_horizontal"
+        android:orientation="horizontal">
+
+        <TextView
+            android:text="English"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:layout_weight="1"
+            android:textColor="#BBBBBB"
+            android:id="@+id/FromLanguageTextView" />
+
+        <TextView
+            android:text="To Language"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:layout_weight="1"
+            android:textSize="14dp"
+            android:textColor="#BBBBBB"
+            android:id="@+id/ToLanguageTextView" />
+
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center_vertical|center_horizontal"
+        android:paddingTop="42dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:text="From Word"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:layout_weight="1"
+            android:textSize="18dp"
+            android:textColor="#000000"
+            android:id="@+id/FromWordTextView" />
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            app:srcCompat="@drawable/ic_swap_horiz_black_24dp"
+
+            android:id="@+id/imageView" />
+
+        <TextView
+            android:text="To Word"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:layout_weight="1"
+            android:textSize="18dp"
+            android:textColor="#000000"
+            android:id="@+id/ToWordTextView" />
+
+    </LinearLayout>
+
+</RelativeLayout>

@@ -129,6 +129,15 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             }
         });
 
+        Button historyButton = (Button) findViewById(R.id.history_button);
+        historyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, History.class);
+                startActivity(intent);
+            }
+        });
+
         //test database stuff
         Button databaseButton = (Button) findViewById(R.id.db_button);
         databaseButton.setOnClickListener(new View.OnClickListener() {
