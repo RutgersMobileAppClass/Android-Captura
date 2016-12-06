@@ -4,7 +4,7 @@
     android:id="@+id/activity_history"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="finalproject.mobileappclass.com.captura.History">
+    tools:context="finalproject.mobileappclass.com.captura.HistoryActivity">
 
     <ListView
         android:layout_width="match_parent"

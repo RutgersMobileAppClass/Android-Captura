@@ -29,10 +29,13 @@ import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Set;
 
 import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static finalproject.mobileappclass.com.captura.R.id.takePhotoButton;
+import static finalproject.mobileappclass.com.captura.R.id.te;
 
 
 import finalproject.mobileappclass.com.captura.DatabaseHelper.CapturaDatabaseHelper;
@@ -130,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         historyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
+                Intent intent = new Intent(MainActivity.this, History.class);
                 startActivity(intent);
             }
         });
