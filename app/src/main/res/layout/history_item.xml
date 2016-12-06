@@ -38,7 +38,9 @@
         android:layout_height="fill_parent"
         android:gravity="center_vertical|center_horizontal"
         android:paddingTop="16dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
 
         <TextView
             android:text="From Word"
