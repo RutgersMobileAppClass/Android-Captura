@@ -71,8 +71,8 @@ public class HistoryActivity extends AppCompatActivity {
             case R.id.action_settings:
 
                 Toast.makeText(HistoryActivity.this, "Settings!", Toast.LENGTH_SHORT).show();
-
-
+                Intent intent = new Intent(HistoryActivity.this, SettingsActivity.class);
+                startActivity(intent);
             default:
                 return super.onOptionsItemSelected(item);
         }
