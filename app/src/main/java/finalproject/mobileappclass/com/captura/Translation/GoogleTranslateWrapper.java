@@ -41,7 +41,7 @@ public class GoogleTranslateWrapper
     {
         CredentialFetcher credentialFetcher = new CredentialFetcher(context);
         Properties properties = credentialFetcher.loadPropertiesFile("captura.properties");
-        String encodedKey = properties.getProperty("translatekey");
+        String encodedKey = properties.getProperty("googleapikey");
         apiKey = new String(Base64.decode(encodedKey.getBytes(), Base64.DEFAULT));
     }
 
