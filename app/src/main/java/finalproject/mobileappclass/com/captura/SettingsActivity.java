@@ -56,7 +56,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 // the preference's 'entries' list.
                 ListPreference listPreference = (ListPreference) preference;
                 int index = listPreference.findIndexOfValue(stringValue);
-                PrefSingleton.getInstance().writePreference("language", stringValue);
+                PrefSingleton.getInstance().writePreference("language_code", stringValue);
+                PrefSingleton.getInstance().writePreference("language_name", (String) listPreference.getEntries()[index]);
 
                 // Set the summary to reflect the new value.
                 preference.setSummary(
