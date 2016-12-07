@@ -16,7 +16,7 @@ public class TranslationRequest
     public TranslationRequest(String inputWord, String translatedWord, String languageOfInterest)
     {
         this.inputWord = inputWord;
-        this. translatedWord = translatedWord;
+        this.translatedWord = translatedWord;
         this.languageOfInterest = languageOfInterest;
     }
 
