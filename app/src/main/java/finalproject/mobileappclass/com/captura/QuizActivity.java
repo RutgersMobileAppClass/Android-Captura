@@ -18,6 +18,8 @@ import com.roughike.bottombar.OnTabSelectListener;
 
 public class QuizActivity extends AppCompatActivity {
 
+    private static final int NEW_QUIZ_REQUEST_CODE = 100;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +52,8 @@ public class QuizActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(QuizActivity.this, "Clicked FAB", Toast.LENGTH_SHORT).show();
+                Intent newQuizIntent = new Intent(getApplicationContext(), NewQuizActivity.class);
+                startActivityForResult(newQuizIntent, NEW_QUIZ_REQUEST_CODE);
             }
         });
 

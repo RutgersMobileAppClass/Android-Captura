@@ -31,6 +31,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="finalproject.mobileappclass.com.captura.MainActivity" />
         </activity>
+        <activity android:name=".NewQuizActivity"></activity>
     </application>
 
 </manifest>
