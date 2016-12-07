@@ -30,31 +30,26 @@ import finalproject.mobileappclass.com.captura.Credentials.CredentialFetcher;
  * Created by Nikhil on 12/3/16.
  */
 
-public class CloudVisionWrapper
-{
+public class CloudVisionWrapper {
     private String apiKey;
     private Bitmap bitmap;
     private Context context;
 
 
-    public CloudVisionWrapper(Bitmap bitmap, Context context)
-    {
+    public CloudVisionWrapper(Bitmap bitmap, Context context) {
         this.bitmap = bitmap;
         this.context = context;
     }
 
-    public void init()
-    {
+    public void init() {
         CredentialFetcher credentialFetcher = new CredentialFetcher(context);
         Properties properties = credentialFetcher.loadPropertiesFile("captura.properties");
         String encodedKey = properties.getProperty("googleapikey");
         apiKey = new String(Base64.decode(encodedKey.getBytes(), Base64.DEFAULT));
     }
 
-    public String performImageRecognition()
-    {
-        try
-        {
+    public List<EntityAnnotation> performImageRecognition() {
+        try {
             init();
             HttpTransport httpTransport = AndroidHttp.newCompatibleTransport();
             JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
@@ -76,10 +71,8 @@ public class CloudVisionWrapper
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 90, byteArrayOutputStream);
                 byte[] imageBytes = byteArrayOutputStream.toByteArray();
 
-
                 base64EncodedImage.encodeContent(imageBytes);
                 annotateImageRequest.setImage(base64EncodedImage);
-
 
                 annotateImageRequest.setFeatures(new ArrayList<Feature>() {{
                     Feature labelDetection = new Feature();
@@ -87,7 +80,6 @@ public class CloudVisionWrapper
                     labelDetection.setMaxResults(10);
                     add(labelDetection);
                 }});
-
 
                 add(annotateImageRequest);
             }});
@@ -98,26 +90,14 @@ public class CloudVisionWrapper
             BatchAnnotateImagesResponse response = annotateRequest.execute();
             return convertResponseToString(response);
         }
-        catch(Exception e)
-        {
-            Log.e("AndroidCaptura", e.getMessage());
-            return e.toString();
+        catch(Exception e) {
+            Log.e("AndroidCaptura Ex", e.getMessage());
+            return new ArrayList<>();
         }
     }
 
-    public String convertResponseToString(BatchAnnotateImagesResponse response) {
-        String message = "I found these things:\n\n";
-
+    public List<EntityAnnotation> convertResponseToString(BatchAnnotateImagesResponse response) {
         List<EntityAnnotation> labels = response.getResponses().get(0).getLabelAnnotations();
-        if (labels != null) {
-            for (EntityAnnotation label : labels) {
-                message += String.format("%.3f: %s", label.getScore(), label.getDescription());
-                message += "\n";
-            }
-        } else {
-            message += "nothing";
-        }
-
-        return message;
+        return labels;
     }
 }
