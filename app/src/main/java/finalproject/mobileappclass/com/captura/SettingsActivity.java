@@ -56,8 +56,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 // the preference's 'entries' list.
                 ListPreference listPreference = (ListPreference) preference;
                 int index = listPreference.findIndexOfValue(stringValue);
-                Log.d("language",listPreference.getValue());
-                Log.d("language",stringValue);
+                PrefSingleton.getInstance().writePreference("language", stringValue);
 
                 // Set the summary to reflect the new value.
                 preference.setSummary(
@@ -69,8 +68,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 // For all other preferences, set the summary to the value's
                 // simple string representation.
                 preference.setSummary(stringValue);
-                Log.d("language",preference.getKey());
-                //PrefSingleton.getInstance().writePreference("language", preference.getKey());
+
             }
             return true;
         }
@@ -110,6 +108,26 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupActionBar();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        } else if(id==android.R.id.home)
+        {
+            finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     /**
