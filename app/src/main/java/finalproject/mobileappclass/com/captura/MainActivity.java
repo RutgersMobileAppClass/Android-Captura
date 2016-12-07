@@ -26,6 +26,8 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
 
@@ -73,26 +75,22 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             PrefSingleton.getInstance().writePreference("language", "en");
         }
         textToSpeech = new TextToSpeech(getApplicationContext(), this);
-        Button takePhotoButton = (Button) findViewById(R.id.takePhotoButton);
         imageView = (ImageView) findViewById(R.id.imageholder);
-        Button uploadPhotoButton = (Button) findViewById(R.id.choosePhotoButton);
         Button recognizeImageButton = (Button) findViewById(R.id.recognize_image_button);
 
         BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
-        bottomBar.setDefaultTab(R.id.tab_photo);
+        bottomBar.setDefaultTab(R.id.tab_photo);//current selected tab
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelected(@IdRes int tabId) {
                 if (tabId == R.id.tab_history) {
-                    // The tab with id R.id.tab_favorites was selected,
-                    // change your content accordingly.
+                    // The tab with id R.id.tab_history was selected,
                     Intent intent = new Intent(getApplicationContext(), HistoryActivity.class);
                     startActivity(intent);
                 }
 
                 if (tabId == R.id.tab_quizzes) {
-                    // The tab with id R.id.tab_favorites was selected,
-                    // change your content accordingly.
+                    // The tab with id R.id.tab_quizzes was selected,
                     Intent intent = new Intent(getApplicationContext(), QuizActivity.class);
                     startActivity(intent);
 
@@ -100,9 +98,8 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             }
         });
 
-
-        //If user wants to take an image from the camera
-        takePhotoButton.setOnClickListener(new View.OnClickListener() {
+        final FloatingActionButton picturefab = (FloatingActionButton) findViewById(R.id.fab_picture);
+        picturefab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (permissionsGranted) {
@@ -116,8 +113,8 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             }
         });
 
-        //If user wants to upload an existing image
-        uploadPhotoButton.setOnClickListener(new View.OnClickListener() {
+        final FloatingActionButton uploadfab = (FloatingActionButton) findViewById(R.id.fab_upload);
+        uploadfab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent();
@@ -126,6 +123,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                 startActivityForResult(Intent.createChooser(intent, "Select Picture"), IMG_UPLOAD_REQUEST_CODE);
             }
         });
+
 
         recognizeImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -234,28 +232,8 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
 
             case R.id.action_settings:
 
-                View settingsItem = findViewById(R.id.action_settings);
-                Toast.makeText(MainActivity.this, "Select a language to learn", Toast.LENGTH_SHORT).show();
-
-                //Creating the instance of PopupMenu
-                PopupMenu popup = new PopupMenu(MainActivity.this, settingsItem);
-
-                //Inflating the Popup using xml file
-                popup.getMenuInflater().inflate(R.menu.popupmenu, popup.getMenu());
-
-                //registering popup with OnMenuItemClickListener
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-
-                    public boolean onMenuItemClick(MenuItem item) {
-
-                        PrefSingleton.getInstance().writePreference("language", (String) item.getTitleCondensed());
-                        textToSpeech.setLanguage(new Locale((String) item.getTitleCondensed()));
-                        setTextToSpeechLanguage();
-                        Toast.makeText(MainActivity.this, "You are now learning " + item.getTitle(), Toast.LENGTH_SHORT).show();
-                        return true;
-                    }
-                });
-                popup.show();
+                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                startActivity(intent);
 
             default:
                 return super.onOptionsItemSelected(item);
