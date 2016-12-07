@@ -1,6 +1,7 @@
 package finalproject.mobileappclass.com.captura;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -24,10 +25,7 @@ import android.view.View;
 import android.widget.Toast;
 import android.util.Log;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
 
-import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
 
@@ -38,16 +36,12 @@ import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
-
 import finalproject.mobileappclass.com.captura.DatabaseHelper.CapturaDatabaseHelper;
-import finalproject.mobileappclass.com.captura.ImageHandling.CloudVisionWrapper;
 
-import finalproject.mobileappclass.com.captura.ImageHandling.ExifUtil;
 import finalproject.mobileappclass.com.captura.ImageHandling.RealPathUtil;
 import finalproject.mobileappclass.com.captura.Models.QuizScore;
 import finalproject.mobileappclass.com.captura.Models.TranslationRequest;
 import finalproject.mobileappclass.com.captura.SharedPreferencesHelper.PrefSingleton;
-import finalproject.mobileappclass.com.captura.Translation.GoogleTranslateWrapper;
 
 public class MainActivity extends AppCompatActivity implements TextToSpeech.OnInitListener{
 
@@ -57,7 +51,6 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
     private static final int PERMISSIONS_REQUEST_CODE = 100;
     private static final int IMG_CAPTURE_REQUEST_CODE = 200;
     private static final int IMG_UPLOAD_REQUEST_CODE = 300;
-    private ImageView imageView;
     private TextToSpeech textToSpeech;
     private String translatedWord;
 
@@ -71,27 +64,28 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         prefSingleton = PrefSingleton.getInstance();
         prefSingleton.init(getApplicationContext());
 
-        if(PrefSingleton.getInstance().readPreference("language_code") == null){
-            PrefSingleton.getInstance().writePreference("language_code", "en");
-            PrefSingleton.getInstance().writePreference("language_name", "English");
+        if(PrefSingleton.getInstance().readPreference("language") == null){
+            PrefSingleton.getInstance().writePreference("language", "en");
         }
         textToSpeech = new TextToSpeech(getApplicationContext(), this);
-        imageView = (ImageView) findViewById(R.id.imageholder);
-        Button recognizeImageButton = (Button) findViewById(R.id.recognize_image_button);
+        Button takePhotoButton = (Button) findViewById(R.id.takePhotoButton);
+        Button uploadPhotoButton = (Button) findViewById(R.id.choosePhotoButton);
 
         BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
-        bottomBar.setDefaultTab(R.id.tab_photo);//current selected tab
+        bottomBar.setDefaultTab(R.id.tab_photo);
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelected(@IdRes int tabId) {
                 if (tabId == R.id.tab_history) {
-                    // The tab with id R.id.tab_history was selected,
+                    // The tab with id R.id.tab_favorites was selected,
+                    // change your content accordingly.
                     Intent intent = new Intent(getApplicationContext(), HistoryActivity.class);
                     startActivity(intent);
                 }
 
                 if (tabId == R.id.tab_quizzes) {
-                    // The tab with id R.id.tab_quizzes was selected,
+                    // The tab with id R.id.tab_favorites was selected,
+                    // change your content accordingly.
                     Intent intent = new Intent(getApplicationContext(), QuizActivity.class);
                     startActivity(intent);
 
@@ -99,8 +93,9 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             }
         });
 
-        final FloatingActionButton picturefab = (FloatingActionButton) findViewById(R.id.fab_picture);
-        picturefab.setOnClickListener(new View.OnClickListener() {
+
+        //If user wants to take an image from the camera
+        takePhotoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (permissionsGranted) {
@@ -114,8 +109,8 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             }
         });
 
-        final FloatingActionButton uploadfab = (FloatingActionButton) findViewById(R.id.fab_upload);
-        uploadfab.setOnClickListener(new View.OnClickListener() {
+        //If user wants to upload an existing image
+        uploadPhotoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent();
@@ -125,32 +120,6 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             }
         });
 
-
-        recognizeImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (hasTakenOrSelectedPhoto)
-                {
-                    new ImageRecognitionTask().execute(((BitmapDrawable)imageView.getDrawable()).getBitmap());
-                }
-                else {
-                    Toast.makeText(MainActivity.this, "Photo not taken or selected yet!", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-
-        //translation testing
-        final EditText inputText = (EditText) findViewById(R.id.input_field) ;
-        Button translateButton = (Button) findViewById(R.id.translate_button);
-        translateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view)
-            {
-                new GoogleTranslateTask().execute(inputText.getText().toString(), "en", PrefSingleton.getInstance().readPreference("language_code"));
-            }
-        });
-
-
         //test database stuff
         Button databaseButton = (Button) findViewById(R.id.db_button);
         databaseButton.setOnClickListener(new View.OnClickListener() {
@@ -158,10 +127,10 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             public void onClick(View view) {
                 CapturaDatabaseHelper capturaDatabaseHelper = CapturaDatabaseHelper.getInstance(getApplicationContext());
                 TranslationRequest translationRequest = new TranslationRequest("Hello", "Bonjour", "fr");
-                TranslationRequest translationRequest1 = new TranslationRequest("Hello", "Hola", "es");
+                TranslationRequest translationRequest1 = new TranslationRequest("Hello", "Hola", "esp");
 
                 QuizScore quizScore = new QuizScore(10, "Test timestamp", "fr");
-                QuizScore quizScore1 = new QuizScore(10, "Test timestamp2", "es");
+                QuizScore quizScore1 = new QuizScore(10, "Test timestamp2", "esp");
 
                 //insert
                 capturaDatabaseHelper.insertTranslationRequest(translationRequest);
@@ -175,50 +144,41 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                 ArrayList<TranslationRequest> requestList = capturaDatabaseHelper.getEntireHistory();
                 ArrayList<QuizScore> quizScoreArrayList = capturaDatabaseHelper.getAllScores();
 
-                for(TranslationRequest tr : requestList)
-                {
+                for(TranslationRequest tr : requestList) {
                     Log.v("AndroidCaptura", tr.getInputWord() + " " + tr.getTranslatedWord() + " " + tr.getLanguageOfInterest());
                 }
 
-                for(QuizScore qs : quizScoreArrayList)
-                {
+                for(QuizScore qs : quizScoreArrayList) {
                     Log.v("AndroidCaptura", ""+qs.getQuizScore() + " " + qs.getTimeStamp() + " " + qs.getLanguageOfInterest());
                 }
 
                 ArrayList<TranslationRequest> requestArrayList = capturaDatabaseHelper.findTranslationRequestsByLanguage("fr");
-                ArrayList<QuizScore> quizScores = capturaDatabaseHelper.findQuizScoresByLanguage("es");
+                ArrayList<QuizScore> quizScores = capturaDatabaseHelper.findQuizScoresByLanguage("esp");
 
-                for(TranslationRequest t : requestArrayList)
-                {
+                for(TranslationRequest t : requestArrayList) {
                     Log.v("AndroidCaptura", t.getInputWord() + " " + t.getTranslatedWord() + " " + t.getLanguageOfInterest());
                 }
 
-                for(QuizScore q : quizScores)
-                {
+                for(QuizScore q : quizScores) {
                     Log.v("AndroidCaptura", ""+q.getQuizScore() + " " + q.getLanguageOfInterest() + " " + q.getTimeStamp());
                 }
 
             }
         });
 
-
-
-        Button ttsButton = (Button) findViewById(R.id.tts_button);
+        /*Button ttsButton = (Button) findViewById(R.id.tts_button);
         ttsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(translatedWord != null)
-                {
+                if(translatedWord != null) {
                     textToSpeech.speak(translatedWord, TextToSpeech.QUEUE_FLUSH, null, null);
                 }
-                else
-                {
+                else {
                     Toast.makeText(getApplicationContext(), "You have not translated a word", Toast.LENGTH_LONG).show();
                 }
             }
-        });
+        });*/
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -233,14 +193,33 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
 
             case R.id.action_settings:
 
-                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-                startActivity(intent);
+                View settingsItem = findViewById(R.id.action_settings);
+                Toast.makeText(MainActivity.this, "Select a language to learn", Toast.LENGTH_SHORT).show();
+
+                //Creating the instance of PopupMenu
+                PopupMenu popup = new PopupMenu(MainActivity.this, settingsItem);
+
+                //Inflating the Popup using xml file
+                popup.getMenuInflater().inflate(R.menu.popupmenu, popup.getMenu());
+
+                //registering popup with OnMenuItemClickListener
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+
+                    public boolean onMenuItemClick(MenuItem item) {
+
+                        PrefSingleton.getInstance().writePreference("language", (String) item.getTitleCondensed());
+                        textToSpeech.setLanguage(new Locale((String) item.getTitleCondensed()));
+                        setTextToSpeechLanguage();
+                        Toast.makeText(MainActivity.this, "You are now learning " + item.getTitle(), Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
+                });
+                popup.show();
 
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
-
 
     public void checkAndRequestPermissions() {
         int cameraResult = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA);
@@ -271,17 +250,24 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
     //TODO: EDIT THIS AS NEEDED TO HANDLE IMAGE CAPTURE
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Intent intent = new Intent(getApplicationContext(), DisplayResultsActivity.class);
+        Bundle extras = data.getExtras();
+
         if (requestCode == IMG_CAPTURE_REQUEST_CODE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
+
             Bitmap imageBitmap = (Bitmap) extras.get("data");
-            imageView.setImageBitmap(imageBitmap);
+            intent.putExtra("image", imageBitmap);
+            intent.putExtra("request", IMG_CAPTURE_REQUEST_CODE);
+            startActivity(intent);
             hasTakenOrSelectedPhoto = true;
         } else if (requestCode == IMG_UPLOAD_REQUEST_CODE && resultCode == RESULT_OK) {
             Uri imageUri = data.getData();
 
-            try
-            {
-                decodeFile(RealPathUtil.getRealPathFromURI_API19(getApplicationContext(), imageUri));
+            try {
+                String filepath = RealPathUtil.getRealPathFromURI_API19(getApplicationContext(), imageUri);
+                intent.putExtra("request", IMG_UPLOAD_REQUEST_CODE);
+                intent.putExtra("imageFilepath", filepath);
+                startActivity(intent);
                 hasTakenOrSelectedPhoto = true;
             } catch (Exception e) {
                 Log.e("Captura", e.getMessage());
@@ -289,90 +275,21 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         }
     }
 
-    //TODO: May or may not have to create an asynctask for this if the operation causes the UI thread to crash
-    public void decodeFile(String filePath) {
-
-        // Decode image size
-        BitmapFactory.Options o = new BitmapFactory.Options();
-        o.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(filePath, o);
-
-        // The new size we want to scale to
-        final int REQUIRED_SIZE = 1024;
-
-        // Find the correct scale value. It should be the power of 2.
-        int width_tmp = o.outWidth, height_tmp = o.outHeight;
-        int scale = 1;
-        while (true) {
-            if (width_tmp < REQUIRED_SIZE && height_tmp < REQUIRED_SIZE)
-                break;
-            width_tmp /= 2;
-            height_tmp /= 2;
-            scale *= 2;
-        }
-
-        // Decode with inSampleSize
-        BitmapFactory.Options o2 = new BitmapFactory.Options();
-        o2.inSampleSize = scale;
-        Bitmap b1 = BitmapFactory.decodeFile(filePath, o2);
-        Bitmap b = ExifUtil.rotateBitmap(filePath, b1);
-        imageView.setImageBitmap(b);
-
-    }
-
-    private class ImageRecognitionTask extends AsyncTask<Bitmap, Void, String>
-    {
-        @Override
-        protected String doInBackground(Bitmap... bitmaps)
-        {
-            CloudVisionWrapper cloudVisionWrapper = new CloudVisionWrapper(bitmaps[0], getApplicationContext());
-            return cloudVisionWrapper.performImageRecognition();
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            Log.v("AndroidCaptura", s);
-        }
-    }
-
-    private class  GoogleTranslateTask extends AsyncTask<String, Void, String>
-    {
-        @Override
-        protected String doInBackground(String... strings)
-        {
-            GoogleTranslateWrapper googleTranslateWrapper = new GoogleTranslateWrapper(getApplicationContext());
-            return googleTranslateWrapper.translate(strings[0], strings[1], strings[2]);
-        }
-
-        @Override
-        protected void onPostExecute(String s)
-        {
-            translatedWord = s;
-            Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
-        }
-    }
-
     @Override
-    public void onInit(int status)
-    {
-        if(status == TextToSpeech.SUCCESS)
-        {
+    public void onInit(int status) {
+        if(status == TextToSpeech.SUCCESS) {
             setTextToSpeechLanguage();
         }
     }
 
-    public void setTextToSpeechLanguage()
-    {
-        if(textToSpeech.isLanguageAvailable(new Locale(prefSingleton.readPreference("language"))) == TextToSpeech.LANG_AVAILABLE)
-        {
+    public void setTextToSpeechLanguage() {
+        if(textToSpeech.isLanguageAvailable(new Locale(prefSingleton.readPreference("language"))) == TextToSpeech.LANG_AVAILABLE) {
             Toast.makeText(getApplicationContext(), "This language has TTS support", Toast.LENGTH_LONG).show();
             textToSpeech.setLanguage(new Locale(prefSingleton.readPreference("language")));
         }
-        else
-        {
+        else {
             Toast.makeText(getApplicationContext(), "This language does not have TTS support", Toast.LENGTH_LONG).show();
             textToSpeech.setLanguage(Locale.US);
         }
     }
-
 }
