@@ -29,6 +29,7 @@
         <item>Croation</item>
         <item>Czech</item>
         <item>Danish</item>
+        <item>Dutch</item>
         <item>English</item>
         <item>Esperanto</item>
         <item>Estonian</item>
@@ -85,14 +86,15 @@
         <item>sq</item>
         <item>ar</item>
         <item>az</item>
-        <item>Basque</item>
         <item>eu</item>
         <item>bn</item>
         <item>be</item>
+        <item>bg</item>
         <item>ca</item>
         <item>hr</item>
         <item>cs</item>
         <item>da</item>
+        <item>nl</item>
         <item>en</item>
         <item>eo</item>
         <item>et</item>
