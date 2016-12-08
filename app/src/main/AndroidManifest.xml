@@ -37,7 +37,9 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="finalproject.mobileappclass.com.captura.MainActivity" />
+        </activity>
         <activity android:name=".NewQuizActivity"></activity>
     </application>
 

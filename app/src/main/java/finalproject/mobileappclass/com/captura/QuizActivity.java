@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -22,6 +23,7 @@ import com.roughike.bottombar.OnTabSelectListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import finalproject.mobileappclass.com.captura.Models.QuizScore;
 import finalproject.mobileappclass.com.captura.SharedPreferencesHelper.PrefSingleton;
@@ -32,6 +34,7 @@ public class QuizActivity extends AppCompatActivity {
     private ListView quizListView;
     private QuizAdapter quizAdapter;
     private ArrayList<QuizScore> quizScoreArrayList;
+    private ArrayList<QuizScore> quizScoreArrayList = new ArrayList<QuizScore>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +77,8 @@ public class QuizActivity extends AppCompatActivity {
                 Intent newQuizIntent = new Intent(getApplicationContext(), NewQuizActivity.class);
                 startActivityForResult(newQuizIntent, NEW_QUIZ_REQUEST_CODE);
             }
+
+
         });
 
     }

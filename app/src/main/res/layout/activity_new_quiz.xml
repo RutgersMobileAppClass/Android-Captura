@@ -62,7 +62,11 @@
             android:hint="English Word"
             android:textSize="25dp"
             android:id="@+id/newQuizEnglishWordTextView"/>
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> b33cb16506cac56240452577ba91d28da310af8f
     </LinearLayout>
 
     <LinearLayout
