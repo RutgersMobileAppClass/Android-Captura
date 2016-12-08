@@ -33,8 +33,8 @@ public class QuizActivity extends AppCompatActivity {
     private static final int NEW_QUIZ_REQUEST_CODE = 100;
     private ListView quizListView;
     private QuizAdapter quizAdapter;
-    private ArrayList<QuizScore> quizScoreArrayList;
     private ArrayList<QuizScore> quizScoreArrayList = new ArrayList<QuizScore>();
+    private String currentLanguage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +46,9 @@ public class QuizActivity extends AppCompatActivity {
         quizScoreArrayList = new ArrayList<>();
         quizAdapter = new QuizAdapter(this, quizScoreArrayList);
         quizListView.setAdapter(quizAdapter);
+
+        //Get the currently set language
+        currentLanguage = PrefSingleton.getInstance().readPreference("language"); //get current language from SharedPreferences
 
         BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
         bottomBar.setDefaultTab(R.id.tab_quizzes);
@@ -73,7 +76,6 @@ public class QuizActivity extends AppCompatActivity {
         findViewById(R.id.normal_plus).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(QuizActivity.this, "Clicked FAB", Toast.LENGTH_SHORT).show();
                 Intent newQuizIntent = new Intent(getApplicationContext(), NewQuizActivity.class);
                 startActivityForResult(newQuizIntent, NEW_QUIZ_REQUEST_CODE);
             }

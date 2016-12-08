@@ -162,14 +162,12 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
 
                 TranslationRequest translationRequest = new TranslationRequest("Hello", "Bonjour", "fr");
                 TranslationRequest translationRequest1 = new TranslationRequest("Hello", "Hola", "es");
-<<<<<<< HEAD
-=======
+
                 /* NEIL'S ADDITIONS FOR TESTING */
                 TranslationRequest translationRequest2 = new TranslationRequest("Dog", "Perro", "es");
                 TranslationRequest translationRequest3 = new TranslationRequest("Goodbye", "Adios", "es");
                 TranslationRequest translationRequest4 = new TranslationRequest("Sun", "Sol", "es");
                 TranslationRequest translationRequest5 = new TranslationRequest("Moon", "Luna", "es");
->>>>>>> b33cb16506cac56240452577ba91d28da310af8f
 
                 QuizScore quizScore = new QuizScore(10, "Test timestamp", "fr");
                 QuizScore quizScore1 = new QuizScore(10, "Test timestamp2", "es");

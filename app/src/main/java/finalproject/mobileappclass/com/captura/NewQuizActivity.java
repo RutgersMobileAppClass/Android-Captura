@@ -65,13 +65,14 @@ public class NewQuizActivity extends AppCompatActivity {
                 //Validate the inputted answer
                 String enteredTranslation = translationEditText.getText().toString();
                 //Query the database for the correct translation
-                String correctTranslation = capturaDatabaseHelper.findTranslationForInputWord(englishWordTextView.getText().toString());
+                String correctTranslation = capturaDatabaseHelper.findTranslationForInputWord(englishWordTextView.getText().toString(), currentLanguage);
                 if (correctTranslation.equalsIgnoreCase(enteredTranslation)) {
                     Toast.makeText(getApplicationContext(), "Correct!", Toast.LENGTH_LONG).show();
                     numCorrectTranslations++;
                 }
                 else {
                     Toast.makeText(getApplicationContext(), "Incorrect!", Toast.LENGTH_LONG).show();
+                    Log.v("NewQuiz", "Correct translation: " + correctTranslation + ", entered: " + enteredTranslation);
                 }
                 if (quizQuestionNumber > 10) {
                     Intent quizCompleteIntent = new Intent();
@@ -92,9 +93,10 @@ public class NewQuizActivity extends AppCompatActivity {
 
         //Randomly select a previous translation from the database of the target language
         int max = translationList.size();
+        Log.v("NewQuiz", "Size of list of words: " + max);
         int min = 0;
         Random randomGenerator = new Random();
-        int index  = randomGenerator.nextInt(max - min + 1) + min;
+        int index  = randomGenerator.nextInt(max - min) + min;
         TranslationRequest selectedTranslation = translationList.get(index);
         String englishWord = selectedTranslation.getInputWord();
         String translatedWord = selectedTranslation.getTranslatedWord();
