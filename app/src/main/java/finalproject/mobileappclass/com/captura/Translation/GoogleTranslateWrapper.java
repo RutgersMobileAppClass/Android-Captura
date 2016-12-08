@@ -78,6 +78,11 @@ public class GoogleTranslateWrapper
                 if(jsonObject.get("error") == null) {
                     String outputText = jsonObject.get("data").getAsJsonObject().get("translations").getAsJsonArray()
                             .get(0).getAsJsonObject().get("translatedText").getAsString();
+                    if(outputText.contains("&#39;"))
+                    {
+                        Log.v("AndroidCaptura", "Inside if statement");
+                        outputText = outputText.replace("&#39;", "'");
+                    }
                     return outputText;
                 }
             }
