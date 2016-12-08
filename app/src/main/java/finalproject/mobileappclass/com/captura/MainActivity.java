@@ -69,8 +69,10 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             PrefSingleton.getInstance().writePreference("language", "en");
         }
         textToSpeech = new TextToSpeech(getApplicationContext(), this);
-        Button takePhotoButton = (Button) findViewById(R.id.takePhotoButton);
-        Button uploadPhotoButton = (Button) findViewById(R.id.choosePhotoButton);
+
+
+        //Button takePhotoButton = (Button) findViewById(R.id.takePhotoButton);
+        //Button uploadPhotoButton = (Button) findViewById(R.id.choosePhotoButton);
 
         BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
         bottomBar.setDefaultTab(R.id.tab_photo);
