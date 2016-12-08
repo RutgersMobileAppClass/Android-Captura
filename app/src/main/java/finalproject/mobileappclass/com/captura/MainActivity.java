@@ -97,10 +97,17 @@ public class MainActivity extends AppCompatActivity
         fabUpload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "Select Picture"), IMG_UPLOAD_REQUEST_CODE);
+                if(PrefSingleton.getInstance().readPreference("language_code").equals("en"))
+                {
+                    Toast.makeText(getApplicationContext(), "cannot do english to english translation", Toast.LENGTH_LONG).show();
+                }
+                else
+                {
+                    Intent intent = new Intent();
+                    intent.setType("image/*");
+                    intent.setAction(Intent.ACTION_GET_CONTENT);
+                    startActivityForResult(Intent.createChooser(intent, "Select Picture"), IMG_UPLOAD_REQUEST_CODE);
+                }
             }
         });
 
@@ -108,10 +115,19 @@ public class MainActivity extends AppCompatActivity
         fabPicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (permissionsGranted) {
-                    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                        startActivityForResult(takePictureIntent, IMG_CAPTURE_REQUEST_CODE);
+                if (permissionsGranted)
+                {
+                    if(PrefSingleton.getInstance().readPreference("language_code").equals("en"))
+                    {
+                        Toast.makeText(getApplicationContext(), "cannot do english to english translation", Toast.LENGTH_LONG).show();
+                    }
+                    else
+                    {
+                        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        if (takePictureIntent.resolveActivity(getPackageManager()) != null)
+                        {
+                            startActivityForResult(takePictureIntent, IMG_CAPTURE_REQUEST_CODE);
+                        }
                     }
                 } else {
                     Toast.makeText(getApplicationContext(), "Need Permission To Use Camera", Toast.LENGTH_LONG).show();
