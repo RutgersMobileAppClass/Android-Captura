@@ -224,6 +224,10 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
 
             case R.id.action_settings:
 
+                Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+                startActivity(intent);
+                return true;
+                /*
                 View settingsItem = findViewById(R.id.action_settings);
                 Toast.makeText(MainActivity.this, "Select a language to learn", Toast.LENGTH_SHORT).show();
 
@@ -246,6 +250,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                     }
                 });
                 popup.show();
+                */
 
             default:
                 return super.onOptionsItemSelected(item);

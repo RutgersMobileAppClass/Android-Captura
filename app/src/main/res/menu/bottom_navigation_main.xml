@@ -4,7 +4,8 @@
         android:id="@+id/tab_quizzes"
         android:icon="@mipmap/ic_text_format_white_24dp"
         android:enabled="true"
-        android:title="Quizzes"/>
+        android:title="Quizzes"
+        />
     <item
         android:id="@+id/tab_capture"
         android:icon="@android:drawable/ic_dialog_info"
