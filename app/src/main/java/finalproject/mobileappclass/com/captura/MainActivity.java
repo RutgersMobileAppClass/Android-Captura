@@ -119,59 +119,6 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             }
         });
 
-        // Test DB FAB
-        final FloatingActionButton fabDBTest = (FloatingActionButton) findViewById(R.id.fab_db_test);
-        fabDBTest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                CapturaDatabaseHelper capturaDatabaseHelper = CapturaDatabaseHelper.getInstance(getApplicationContext());
-                TranslationRequest translationRequest = new TranslationRequest("Hello", "Bonjour", "fr");
-                TranslationRequest translationRequest1 = new TranslationRequest("Hello", "Hola", "es");
-                TranslationRequest translationRequest2 = new TranslationRequest("Dog", "Canis", "la");
-                TranslationRequest translationRequest3 = new TranslationRequest("Elephant", "Elefante", "pt");
-                TranslationRequest translationRequest4 = new TranslationRequest("Bye", "Doei", "nl");
-                TranslationRequest translationRequest5 = new TranslationRequest("Apple", "Sagar", "eu");
-                QuizScore quizScore = new QuizScore(10, "Test timestamp", "fr");
-                QuizScore quizScore1 = new QuizScore(10, "Test timestamp2", "esp");
-
-                //insert
-                capturaDatabaseHelper.insertTranslationRequest(translationRequest);
-                capturaDatabaseHelper.insertTranslationRequest(translationRequest);
-                capturaDatabaseHelper.insertTranslationRequest(translationRequest1);
-                capturaDatabaseHelper.insertTranslationRequest(translationRequest1);
-                capturaDatabaseHelper.insertTranslationRequest(translationRequest2);
-                capturaDatabaseHelper.insertTranslationRequest(translationRequest3);
-                capturaDatabaseHelper.insertTranslationRequest(translationRequest4);
-                capturaDatabaseHelper.insertTranslationRequest(translationRequest5);
-                capturaDatabaseHelper.insertQuizScore(quizScore);
-                capturaDatabaseHelper.insertQuizScore(quizScore1);
-
-                //query
-                ArrayList<TranslationRequest> requestList = capturaDatabaseHelper.getEntireHistory();
-                ArrayList<QuizScore> quizScoreArrayList = capturaDatabaseHelper.getAllScores();
-
-                for(TranslationRequest tr : requestList) {
-                    Log.v("AndroidCaptura", tr.getInputWord() + " " + tr.getTranslatedWord() + " " + tr.getLanguageOfInterest());
-                }
-
-                for(QuizScore qs : quizScoreArrayList) {
-                    Log.v("AndroidCaptura", ""+qs.getQuizScore() + " " + qs.getTimeStamp() + " " + qs.getLanguageOfInterest());
-                }
-
-                ArrayList<TranslationRequest> requestArrayList = capturaDatabaseHelper.findTranslationRequestsByLanguage("fr");
-                ArrayList<QuizScore> quizScores = capturaDatabaseHelper.findQuizScoresByLanguage("es");
-
-                for(TranslationRequest t : requestArrayList) {
-                    Log.v("AndroidCaptura", t.getInputWord() + " " + t.getTranslatedWord() + " " + t.getLanguageOfInterest());
-                }
-
-                for(QuizScore q : quizScores) {
-                    Log.v("AndroidCaptura", ""+q.getQuizScore() + " " + q.getLanguageOfInterest() + " " + q.getTimeStamp());
-                }
-            }
-        });
-
-
     }
 
     @Override

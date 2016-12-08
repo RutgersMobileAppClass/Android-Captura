@@ -70,11 +70,7 @@ public class HistoryActivity extends AppCompatActivity{
         });
 
         final FloatingActionButton button = (FloatingActionButton) findViewById(R.id.setter);
-        button.setSize(FloatingActionButton.SIZE_NORMAL);
-        button.setColorNormalResId(R.color.colorPrimary);
-        button.setColorPressedResId(R.color.colorPrimaryDark);
         button.setIcon(R.drawable.ic_visibility_off);
-        button.setStrokeVisible(false);
 
         //Study Mode Toggle
         findViewById(R.id.setter).setOnClickListener(new View.OnClickListener() {
