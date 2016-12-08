@@ -83,6 +83,7 @@ public class GoogleTranslateWrapper
                 JsonObject jsonObject = jsonElement.getAsJsonObject();
                 if(jsonObject.get("error") == null)
                 {
+
                     String outputText = jsonObject.get("data").getAsJsonObject().get("translations").getAsJsonArray()
                             .get(0).getAsJsonObject().get("translatedText").getAsString();
                     return outputText;

@@ -120,7 +120,7 @@ public class DisplayResultsActivity extends AppCompatActivity {
         protected void onPostExecute(List<EntityAnnotation> s) {
             for(EntityAnnotation label : s) {
                 keywords.add(label.getDescription());
-                new GoogleTranslateTask().execute(label.getDescription(), "en", PrefSingleton.getInstance().readPreference("language"));
+                new GoogleTranslateTask().execute(label.getDescription(), "en", PrefSingleton.getInstance().readPreference("language_code"));
             }
         }
     }
