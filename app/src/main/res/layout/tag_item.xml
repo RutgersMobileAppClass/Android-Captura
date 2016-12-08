@@ -17,7 +17,7 @@
 
         <TextView
             android:text="From Word"
-            android:layout_width="match_parent"
+            android:layout_width="320dp"
             android:layout_height="wrap_content"
             android:gravity="left"
             android:layout_weight="1"
@@ -33,13 +33,22 @@
 
         <TextView
             android:text="To Word"
-            android:layout_width="match_parent"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:gravity="right"
+            android:paddingRight="10dp"
             android:layout_weight="1"
             android:textSize="18dp"
             android:textColor="#000000"
             android:id="@+id/TranslatedTagTextView" />
+
+        <Button
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/ic_volume_up_black_24dp"
+            android:id="@+id/pronunciationButton"
+            android:onClick="ttsHandler"
+            android:layout_gravity="center"/>
 
     </LinearLayout>
 

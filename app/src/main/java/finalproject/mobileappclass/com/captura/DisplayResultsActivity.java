@@ -6,13 +6,16 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
+import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.api.services.vision.v1.model.EntityAnnotation;
 
@@ -41,7 +44,7 @@ public class DisplayResultsActivity extends AppCompatActivity {
     private ArrayList<String> translations = new ArrayList<String>();
     private GeneratedTagAdapter adapter;
     private ListView listOfTags;
-
+    private TextToSpeech textToSpeech;
     private int counter = 0;
 
     @Override
