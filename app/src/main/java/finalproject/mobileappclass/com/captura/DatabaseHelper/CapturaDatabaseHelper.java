@@ -299,4 +299,30 @@ public class CapturaDatabaseHelper extends SQLiteOpenHelper
         }
         return resultList;
     }
+
+    public String findTranslationForInputWord(String inputWord) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT " + COLUMN_TRANSLATED_WORD + " FROM " + TABLE_TRANSLATION_REQUESTS + " WHERE " + COLUMN_INPUT_WORD
+                + "= ?", new String[]{inputWord});
+        db.beginTransaction();
+        String result = "";
+        try {
+            if (cursor.getCount() == 1) { //match found- return the correct translation
+                result = cursor.getString(0);
+            }
+        }
+        catch(Exception e)
+        {
+            Log.e("AndroidCaptura", e.getMessage());
+        }
+        finally
+        {
+            if(cursor != null && !(cursor.isClosed()))
+            {
+                cursor.close();
+            }
+            db.endTransaction();
+        }
+        return result;
+    }
 }
