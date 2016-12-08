@@ -53,8 +53,6 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
     private static final int IMG_CAPTURE_REQUEST_CODE = 200;
     private static final int IMG_UPLOAD_REQUEST_CODE = 300;
     private TextToSpeech textToSpeech;
-    private String translatedWord;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,11 +64,11 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         prefSingleton.init(getApplicationContext());
 
         if(PrefSingleton.getInstance().readPreference("language_code") == null){
-
             PrefSingleton.getInstance().writePreference("language_code", "en");
             PrefSingleton.getInstance().writePreference("language_name", "English");
         }
         textToSpeech = new TextToSpeech(getApplicationContext(), this);
+
 
         BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
         bottomBar.setDefaultTab(R.id.tab_photo);

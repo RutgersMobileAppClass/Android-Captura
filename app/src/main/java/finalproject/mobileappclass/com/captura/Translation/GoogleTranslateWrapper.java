@@ -45,11 +45,9 @@ public class GoogleTranslateWrapper
         apiKey = new String(Base64.decode(encodedKey.getBytes(), Base64.DEFAULT));
     }
 
-    public String translate(String inputText, String inputLanguage, String outputLanguage)
-    {
+    public String translate(String inputText, String inputLanguage, String outputLanguage) {
         StringBuilder response = new StringBuilder();
-        try
-        {
+        try {
             init();
             String encodedInputText = URLEncoder.encode(inputText, "UTF-8");
             String requestUrl = "https://www.googleapis.com/language/translate/v2?key=" + apiKey +
@@ -59,45 +57,37 @@ public class GoogleTranslateWrapper
             HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
 
             InputStream inputStream;
-            if(httpsURLConnection.getResponseCode() == 200)
-            {
+            if(httpsURLConnection.getResponseCode() == 200) {
                 inputStream = httpsURLConnection.getInputStream();
             }
-            else
-            {
+            else {
                 inputStream = httpsURLConnection.getErrorStream();
             }
 
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             String line;
-            while((line = bufferedReader.readLine()) != null)
-            {
+            while((line = bufferedReader.readLine()) != null) {
                 response.append(line);
             }
 
             JsonParser jsonParser = new JsonParser();
             JsonElement jsonElement = jsonParser.parse(response.toString());
 
-            if(jsonElement.isJsonObject())
-            {
+            if(jsonElement.isJsonObject()) {
                 JsonObject jsonObject = jsonElement.getAsJsonObject();
-                if(jsonObject.get("error") == null)
-                {
-
+                if(jsonObject.get("error") == null) {
                     String outputText = jsonObject.get("data").getAsJsonObject().get("translations").getAsJsonArray()
                             .get(0).getAsJsonObject().get("translatedText").getAsString();
                     return outputText;
                 }
             }
 
-            if(httpsURLConnection.getResponseCode() != 200)
-            {
+            if(httpsURLConnection.getResponseCode() != 200) {
                 Log.e("AndroidCaptura", response.toString());
                 return response.toString();
             }
         }
-        catch(Exception e)
-        {
+        catch(Exception e) {
             Log.e("AndroidCaptura", e.getMessage());
         }
         return null;

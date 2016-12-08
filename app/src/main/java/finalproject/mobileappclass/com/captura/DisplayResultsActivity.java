@@ -6,20 +6,27 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
+import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.api.services.vision.v1.model.EntityAnnotation;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import finalproject.mobileappclass.com.captura.DatabaseHelper.CapturaDatabaseHelper;
 import finalproject.mobileappclass.com.captura.ImageHandling.CloudVisionWrapper;
 import finalproject.mobileappclass.com.captura.ImageHandling.ExifUtil;
 import finalproject.mobileappclass.com.captura.Models.TagTranslation;
+import finalproject.mobileappclass.com.captura.Models.TranslationRequest;
 import finalproject.mobileappclass.com.captura.SharedPreferencesHelper.PrefSingleton;
 import finalproject.mobileappclass.com.captura.Translation.GoogleTranslateWrapper;
 
@@ -37,7 +44,7 @@ public class DisplayResultsActivity extends AppCompatActivity {
     private ArrayList<String> translations = new ArrayList<String>();
     private GeneratedTagAdapter adapter;
     private ListView listOfTags;
-
+    private TextToSpeech textToSpeech;
     private int counter = 0;
 
     @Override
@@ -65,6 +72,24 @@ public class DisplayResultsActivity extends AppCompatActivity {
         }
 
         new ImageRecognitionTask().execute(((BitmapDrawable)imageView.getDrawable()).getBitmap());
+
+        listOfTags.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> arg0, View v, int position, long id) {
+                try {
+                    CapturaDatabaseHelper capturaDatabaseHelper = CapturaDatabaseHelper.getInstance(getApplicationContext());
+                    TranslationRequest translationRequest = new TranslationRequest(tags.get(position).getTag(),
+                            tags.get(position).getTranslatedTag(), PrefSingleton.getInstance().readPreference("language_code"));
+                    capturaDatabaseHelper.insertTranslationRequest(translationRequest);
+
+                    Log.v("AndroidCaptura", "Inserted translation request...");
+                    return true;
+                } catch (Exception e) {
+                    Log.v("AndroidCaptura", e.toString());
+                    return false;
+                }
+            }
+        });
     }
 
     public Bitmap decodeFile(String filePath) {
