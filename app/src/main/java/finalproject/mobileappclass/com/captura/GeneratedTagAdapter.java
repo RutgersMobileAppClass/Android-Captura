@@ -19,6 +19,8 @@ import java.util.Locale;
 import finalproject.mobileappclass.com.captura.Models.TagTranslation;
 import finalproject.mobileappclass.com.captura.SharedPreferencesHelper.PrefSingleton;
 
+import static com.google.api.client.http.HttpMethods.HEAD;
+
 /**
  * Created by viral on 12/6/16.
  */
@@ -80,7 +82,8 @@ public class GeneratedTagAdapter extends ArrayAdapter<TagTranslation> implements
     public void setTextToSpeechLanguage()
     {
         String languageCode = PrefSingleton.getInstance().readPreference("language_code");
-        if(textToSpeech.isLanguageAvailable(new Locale(languageCode)) == TextToSpeech.LANG_AVAILABLE) {
+        if(textToSpeech.isLanguageAvailable(new Locale(languageCode)) == TextToSpeech.LANG_AVAILABLE)
+        {
             textToSpeech.setLanguage(new Locale(languageCode));
         }
         else {

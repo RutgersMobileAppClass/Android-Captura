@@ -53,7 +53,7 @@ public class DisplayResultsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_display_results);
 
         listOfTags = (ListView) findViewById(R.id.GeneratedTagsListView);
-        adapter = new GeneratedTagAdapter(this, tags);
+        adapter = new GeneratedTagAdapter(getApplicationContext(), tags);
         listOfTags.setAdapter(adapter);
 
         Intent intent = getIntent();
@@ -81,7 +81,7 @@ public class DisplayResultsActivity extends AppCompatActivity {
                     TranslationRequest translationRequest = new TranslationRequest(tags.get(position).getTag(),
                             tags.get(position).getTranslatedTag(), PrefSingleton.getInstance().readPreference("language_code"));
                     capturaDatabaseHelper.insertTranslationRequest(translationRequest);
-
+                    Toast.makeText(getApplicationContext(), "Storing result to database", Toast.LENGTH_SHORT).show();
                     Log.v("AndroidCaptura", "Inserted translation request...");
                     return true;
                 } catch (Exception e) {
