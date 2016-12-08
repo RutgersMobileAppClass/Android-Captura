@@ -43,7 +43,7 @@ public class HistoryActivity extends AppCompatActivity{
         new DBLoadTask().execute();
 
         historyOfRequests = (ListView) findViewById(R.id.HistoryListView);
-        adapter = new HistoryAdapter(this, requests);
+        adapter = new HistoryAdapter(getApplicationContext(), requests);
         historyOfRequests.setAdapter(adapter);
 
         BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);

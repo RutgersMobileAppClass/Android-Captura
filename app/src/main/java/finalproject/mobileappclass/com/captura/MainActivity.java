@@ -44,15 +44,15 @@ import finalproject.mobileappclass.com.captura.Models.QuizScore;
 import finalproject.mobileappclass.com.captura.Models.TranslationRequest;
 import finalproject.mobileappclass.com.captura.SharedPreferencesHelper.PrefSingleton;
 
-public class MainActivity extends AppCompatActivity implements TextToSpeech.OnInitListener{
+public class MainActivity extends AppCompatActivity
+{
 
     PrefSingleton prefSingleton;
     private boolean permissionsGranted = false;
-    private boolean hasTakenOrSelectedPhoto = false;
     private static final int PERMISSIONS_REQUEST_CODE = 100;
     private static final int IMG_CAPTURE_REQUEST_CODE = 200;
     private static final int IMG_UPLOAD_REQUEST_CODE = 300;
-    private TextToSpeech textToSpeech;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             PrefSingleton.getInstance().writePreference("language_code", "en");
             PrefSingleton.getInstance().writePreference("language_name", "English");
         }
-        textToSpeech = new TextToSpeech(getApplicationContext(), this);
+
 
 
         BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
@@ -181,7 +181,6 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             intent.putExtra("image", imageBitmap);
             intent.putExtra("request", IMG_CAPTURE_REQUEST_CODE);
             startActivity(intent);
-            hasTakenOrSelectedPhoto = true;
         } else if (requestCode == IMG_UPLOAD_REQUEST_CODE && resultCode == RESULT_OK) {
             Uri imageUri = data.getData();
 
@@ -190,28 +189,9 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                 intent.putExtra("request", IMG_UPLOAD_REQUEST_CODE);
                 intent.putExtra("imageFilepath", filepath);
                 startActivity(intent);
-                hasTakenOrSelectedPhoto = true;
             } catch (Exception e) {
                 Log.e("Captura", e.getMessage());
             }
-        }
-    }
-
-    @Override
-    public void onInit(int status) {
-        if(status == TextToSpeech.SUCCESS) {
-            setTextToSpeechLanguage();
-        }
-    }
-
-    public void setTextToSpeechLanguage() {
-        if(textToSpeech.isLanguageAvailable(new Locale(prefSingleton.readPreference("language_code"))) == TextToSpeech.LANG_AVAILABLE) {
-            Toast.makeText(getApplicationContext(), "TTS supported", Toast.LENGTH_SHORT).show();
-            textToSpeech.setLanguage(new Locale(prefSingleton.readPreference("language_code")));
-        }
-        else {
-            Toast.makeText(getApplicationContext(), "TTS not supported", Toast.LENGTH_SHORT).show();
-            textToSpeech.setLanguage(Locale.US);
         }
     }
 }
