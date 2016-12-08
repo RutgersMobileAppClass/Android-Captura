@@ -72,10 +72,6 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         }
         textToSpeech = new TextToSpeech(getApplicationContext(), this);
 
-
-        //Button takePhotoButton = (Button) findViewById(R.id.takePhotoButton);
-        //Button uploadPhotoButton = (Button) findViewById(R.id.choosePhotoButton);
-
         BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
         bottomBar.setDefaultTab(R.id.tab_photo);
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
@@ -125,43 +121,18 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             }
         });
 
-/*
-        //If user wants to take an image from the camera
-        takePhotoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (permissionsGranted) {
-                    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                        startActivityForResult(takePictureIntent, IMG_CAPTURE_REQUEST_CODE);
-                    }
-                } else {
-                    Toast.makeText(getApplicationContext(), "Need Permission To Use Camera", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-
-        //If user wants to upload an existing image
-        uploadPhotoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "Select Picture"), IMG_UPLOAD_REQUEST_CODE);
-            }
-        });
-*/
-
-        //test database stuff
-        Button databaseButton = (Button) findViewById(R.id.db_button);
-        databaseButton.setOnClickListener(new View.OnClickListener() {
+        // Test DB FAB
+        final FloatingActionButton fabDBTest = (FloatingActionButton) findViewById(R.id.fab_db_test);
+        fabDBTest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 CapturaDatabaseHelper capturaDatabaseHelper = CapturaDatabaseHelper.getInstance(getApplicationContext());
                 TranslationRequest translationRequest = new TranslationRequest("Hello", "Bonjour", "fr");
                 TranslationRequest translationRequest1 = new TranslationRequest("Hello", "Hola", "es");
-
+                TranslationRequest translationRequest2 = new TranslationRequest("Dog", "Canis", "la");
+                TranslationRequest translationRequest3 = new TranslationRequest("Elephant", "Elefante", "pt");
+                TranslationRequest translationRequest4 = new TranslationRequest("Bye", "Doei", "nl");
+                TranslationRequest translationRequest5 = new TranslationRequest("Apple", "Sagar", "eu");
                 QuizScore quizScore = new QuizScore(10, "Test timestamp", "fr");
                 QuizScore quizScore1 = new QuizScore(10, "Test timestamp2", "esp");
 
@@ -170,6 +141,10 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                 capturaDatabaseHelper.insertTranslationRequest(translationRequest);
                 capturaDatabaseHelper.insertTranslationRequest(translationRequest1);
                 capturaDatabaseHelper.insertTranslationRequest(translationRequest1);
+                capturaDatabaseHelper.insertTranslationRequest(translationRequest2);
+                capturaDatabaseHelper.insertTranslationRequest(translationRequest3);
+                capturaDatabaseHelper.insertTranslationRequest(translationRequest4);
+                capturaDatabaseHelper.insertTranslationRequest(translationRequest5);
                 capturaDatabaseHelper.insertQuizScore(quizScore);
                 capturaDatabaseHelper.insertQuizScore(quizScore1);
 
@@ -195,22 +170,10 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                 for(QuizScore q : quizScores) {
                     Log.v("AndroidCaptura", ""+q.getQuizScore() + " " + q.getLanguageOfInterest() + " " + q.getTimeStamp());
                 }
-
             }
         });
 
-        /*Button ttsButton = (Button) findViewById(R.id.tts_button);
-        ttsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(translatedWord != null) {
-                    textToSpeech.speak(translatedWord, TextToSpeech.QUEUE_FLUSH, null, null);
-                }
-                else {
-                    Toast.makeText(getApplicationContext(), "You have not translated a word", Toast.LENGTH_LONG).show();
-                }
-            }
-        });*/
+
     }
 
     @Override
@@ -229,30 +192,6 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                 Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
                 startActivity(intent);
                 return true;
-                /*
-                View settingsItem = findViewById(R.id.action_settings);
-                Toast.makeText(MainActivity.this, "Select a language to learn", Toast.LENGTH_SHORT).show();
-
-                //Creating the instance of PopupMenu
-                PopupMenu popup = new PopupMenu(MainActivity.this, settingsItem);
-
-                //Inflating the Popup using xml file
-                popup.getMenuInflater().inflate(R.menu.popupmenu, popup.getMenu());
-
-                //registering popup with OnMenuItemClickListener
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-
-                    public boolean onMenuItemClick(MenuItem item) {
-
-                        PrefSingleton.getInstance().writePreference("language", (String) item.getTitleCondensed());
-                        textToSpeech.setLanguage(new Locale((String) item.getTitleCondensed()));
-                        setTextToSpeechLanguage();
-                        Toast.makeText(MainActivity.this, "You are now learning " + item.getTitle(), Toast.LENGTH_SHORT).show();
-                        return true;
-                    }
-                });
-                popup.show();
-                */
 
             default:
                 return super.onOptionsItemSelected(item);
@@ -322,11 +261,11 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
 
     public void setTextToSpeechLanguage() {
         if(textToSpeech.isLanguageAvailable(new Locale(prefSingleton.readPreference("language_code"))) == TextToSpeech.LANG_AVAILABLE) {
-            Toast.makeText(getApplicationContext(), "This language has TTS support", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "TTS supported", Toast.LENGTH_SHORT).show();
             textToSpeech.setLanguage(new Locale(prefSingleton.readPreference("language_code")));
         }
         else {
-            Toast.makeText(getApplicationContext(), "This language does not have TTS support", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "TTS not supported", Toast.LENGTH_SHORT).show();
             textToSpeech.setLanguage(Locale.US);
         }
     }
