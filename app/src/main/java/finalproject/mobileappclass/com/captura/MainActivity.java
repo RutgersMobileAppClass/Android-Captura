@@ -289,10 +289,10 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Intent intent = new Intent(getApplicationContext(), DisplayResultsActivity.class);
-        Bundle extras = data.getExtras();
+
 
         if (requestCode == IMG_CAPTURE_REQUEST_CODE && resultCode == RESULT_OK) {
-
+            Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             intent.putExtra("image", imageBitmap);
             intent.putExtra("request", IMG_CAPTURE_REQUEST_CODE);
