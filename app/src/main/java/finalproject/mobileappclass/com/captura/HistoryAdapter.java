@@ -96,7 +96,6 @@ public class HistoryAdapter extends ArrayAdapter<TranslationRequest> implements 
     public void setTextToSpeechLanguage()
     {
         if(textToSpeech.isLanguageAvailable(new Locale(languageCode)) == TextToSpeech.LANG_AVAILABLE) {
-            Toast.makeText(getContext(), "This language has TTS support", Toast.LENGTH_LONG).show();
             textToSpeech.setLanguage(new Locale(languageCode));
         }
         else {
