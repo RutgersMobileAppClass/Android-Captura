@@ -28,37 +28,6 @@
             android:text="Learn a language on the go!"
             android:textSize="25dp"
             android:layout_gravity="center_horizontal"/>
-<!--
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Take a Photo"
-            android:id="@+id/takePhotoButton"
-            android:layout_gravity="center"
-            />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Choose Existing Photo"
-            android:id="@+id/choosePhotoButton"
-            android:layout_gravity="center"
-            />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/imageholder"
-            android:layout_marginTop="15dp"
-            android:layout_gravity="center"/>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Recognize Image!"
-            android:id="@+id/recognize_image_button"
-            android:layout_gravity="center"/>
-            -->
 
         <Button
             android:layout_width="wrap_content"
@@ -66,28 +35,6 @@
             android:text="Test DB"
             android:id="@+id/db_button"
             android:layout_gravity="center"/>
-
-        <!--<Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Pronounciation"
-            android:id="@+id/tts_button"
-            android:layout_gravity="center"/>
-
-
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="Source Text goes here"
-            android:id="@+id/input_field"
-            android:layout_gravity="center"/>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Translate!"
-            android:id="@+id/translate_button"
-            android:layout_gravity="center"/>-->
 
     </LinearLayout>
 
@@ -105,7 +52,6 @@
         android:layout_marginBottom="76dp"
         android:layout_marginRight="16dp"
         android:layout_marginEnd="16dp">
-
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_picture"
@@ -133,7 +79,6 @@
         android:layout_height="60dp"
         android:layout_alignParentBottom="true"
         app:bb_tabXmlResource="@xml/bottombar_tabs" />
-
 
 </RelativeLayout>
 
