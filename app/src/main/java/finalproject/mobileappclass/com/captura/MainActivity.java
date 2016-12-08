@@ -156,17 +156,30 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             @Override
             public void onClick(View view) {
                 CapturaDatabaseHelper capturaDatabaseHelper = CapturaDatabaseHelper.getInstance(getApplicationContext());
+
                 TranslationRequest translationRequest = new TranslationRequest("Hello", "Bonjour", "fr");
-                TranslationRequest translationRequest1 = new TranslationRequest("Hello", "Hola", "esp");
+                TranslationRequest translationRequest1 = new TranslationRequest("Hello", "Hola", "es");
+                /* NEIL'S ADDITIONS FOR TESTING */
+                TranslationRequest translationRequest2 = new TranslationRequest("Dog", "Perro", "es");
+                TranslationRequest translationRequest3 = new TranslationRequest("Goodbye", "Adios", "es");
+                TranslationRequest translationRequest4 = new TranslationRequest("Sun", "Sol", "es");
+                TranslationRequest translationRequest5 = new TranslationRequest("Moon", "Luna", "es");
 
                 QuizScore quizScore = new QuizScore(10, "Test timestamp", "fr");
-                QuizScore quizScore1 = new QuizScore(10, "Test timestamp2", "esp");
+                QuizScore quizScore1 = new QuizScore(10, "Test timestamp2", "es");
 
                 //insert
                 capturaDatabaseHelper.insertTranslationRequest(translationRequest);
                 capturaDatabaseHelper.insertTranslationRequest(translationRequest);
                 capturaDatabaseHelper.insertTranslationRequest(translationRequest1);
                 capturaDatabaseHelper.insertTranslationRequest(translationRequest1);
+
+                /*NEIL'S ADDITIONS FOR TESTING */
+                capturaDatabaseHelper.insertTranslationRequest(translationRequest2);
+                capturaDatabaseHelper.insertTranslationRequest(translationRequest3);
+                capturaDatabaseHelper.insertTranslationRequest(translationRequest4);
+                capturaDatabaseHelper.insertTranslationRequest(translationRequest5);
+
                 capturaDatabaseHelper.insertQuizScore(quizScore);
                 capturaDatabaseHelper.insertQuizScore(quizScore1);
 

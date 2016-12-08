@@ -230,9 +230,11 @@ public class CapturaDatabaseHelper extends SQLiteOpenHelper
     {
         SQLiteDatabase db = getReadableDatabase();
         ArrayList<TranslationRequest> resultList = new ArrayList<TranslationRequest>();
+        Log.v("DBHelper", "Now forming query");
+        db.beginTransaction();
         Cursor cursor = db.rawQuery("SELECT * FROM "+TABLE_TRANSLATION_REQUESTS+" WHERE " + COLUMN_LAGUAGE_OF_INTEREST
                 + "= ? ORDER BY " + COLUMN_REQUEST_ID + " DESC" , new String[]{language});
-        db.beginTransaction();
+        Log.v("DBHelper", "Finished executing query.");
         try
         {
             if(cursor.moveToFirst())
@@ -261,6 +263,32 @@ public class CapturaDatabaseHelper extends SQLiteOpenHelper
             db.endTransaction();
         }
         return resultList;
+    }
+
+    public String findTranslationForInputWord(String inputWord) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT " + COLUMN_TRANSLATED_WORD + " FROM " + TABLE_TRANSLATION_REQUESTS + " WHERE " + COLUMN_INPUT_WORD
+            + "= ?", new String[]{inputWord});
+        db.beginTransaction();
+        String result = "";
+        try {
+            if (cursor.getCount() == 1) { //match found- return the correct translation
+                result = cursor.getString(0);
+            }
+        }
+        catch(Exception e)
+        {
+            Log.e("AndroidCaptura", e.getMessage());
+        }
+        finally
+        {
+            if(cursor != null && !(cursor.isClosed()))
+            {
+                cursor.close();
+            }
+            db.endTransaction();
+        }
+        return result;
     }
 
     public ArrayList<QuizScore> findQuizScoresByLanguage(String language)
