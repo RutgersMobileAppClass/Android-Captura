@@ -14,8 +14,10 @@ import android.widget.Toast;
 import com.google.api.services.vision.v1.model.EntityAnnotation;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import finalproject.mobileappclass.com.captura.Models.TagTranslation;
+import finalproject.mobileappclass.com.captura.SharedPreferencesHelper.PrefSingleton;
 
 /**
  * Created by viral on 12/6/16.
@@ -68,7 +70,22 @@ public class GeneratedTagAdapter extends ArrayAdapter<TagTranslation> implements
     }
 
     @Override
-    public void onInit(int status) {
+    public void onInit(int status)
+    {
+        if(status == TextToSpeech.SUCCESS) {
+            setTextToSpeechLanguage();
+        }
+    }
 
+    public void setTextToSpeechLanguage()
+    {
+        String languageCode = PrefSingleton.getInstance().readPreference("language_code");
+        if(textToSpeech.isLanguageAvailable(new Locale(languageCode)) == TextToSpeech.LANG_AVAILABLE) {
+            textToSpeech.setLanguage(new Locale(languageCode));
+        }
+        else {
+            Toast.makeText(getContext(), "This language does not have TTS support", Toast.LENGTH_LONG).show();
+            textToSpeech.setLanguage(Locale.US);
+        }
     }
 }
