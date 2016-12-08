@@ -9,49 +9,28 @@
     android:gravity="center_vertical"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="16dp"
-        android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Captura"
-            android:textSize="40dp"
-            android:layout_gravity="center_horizontal"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Learn a language on the go!"
-            android:textSize="25dp"
-            android:layout_gravity="center_horizontal"/>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Test DB"
-            android:id="@+id/db_button"
-            android:layout_gravity="center"/>
-
-    </LinearLayout>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/home"
+        android:id="@+id/imageView2"
+        android:layout_alignBottom="@+id/multiple_actions"
+        android:layout_alignParentStart="true" />
 
     <com.getbase.floatingactionbutton.FloatingActionsMenu
         android:id="@+id/multiple_actions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
         fab:fab_addButtonColorNormal="@color/colorPrimary"
         fab:fab_addButtonColorPressed="@color/colorPrimaryDark"
         fab:fab_addButtonPlusIconColor="@color/white"
         fab:fab_labelStyle="@style/menu_labels_style"
-        android:layout_marginBottom="76dp"
         android:layout_marginRight="16dp"
-        android:layout_marginEnd="16dp">
+        android:layout_marginBottom="16dp"
+        android:layout_above="@+id/bottomBar"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="14dp">
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_picture"
@@ -71,6 +50,15 @@
             fab:fab_title="Upload a picture"
             fab:fab_colorPressed="@color/white_pressed"/>
 
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_db_test"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="@color/white"
+            fab:fab_title="Test DB"
+            fab:fab_colorPressed="@color/white_pressed"/>
+
+
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
     <com.roughike.bottombar.BottomBar
@@ -78,7 +66,10 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_alignParentBottom="true"
-        app:bb_tabXmlResource="@xml/bottombar_tabs" />
+        app:bb_tabXmlResource="@xml/bottombar_tabs" >
+
+    </com.roughike.bottombar.BottomBar>
+
 
 </RelativeLayout>
 
