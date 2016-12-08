@@ -50,15 +50,6 @@
             fab:fab_title="Upload a picture"
             fab:fab_colorPressed="@color/white_pressed"/>
 
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_db_test"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            fab:fab_colorNormal="@color/white"
-            fab:fab_title="Test DB"
-            fab:fab_colorPressed="@color/white_pressed"/>
-
-
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
     <com.roughike.bottombar.BottomBar
