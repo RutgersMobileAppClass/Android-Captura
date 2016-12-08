@@ -33,7 +33,7 @@ public class QuizActivity extends AppCompatActivity {
     private static final int NEW_QUIZ_REQUEST_CODE = 100;
     private ListView quizListView;
     private QuizAdapter quizAdapter;
-    private ArrayList<QuizScore> quizScoreArrayList;
+    private ArrayList<QuizScore> quizScoreArrayList = new ArrayList<QuizScore>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

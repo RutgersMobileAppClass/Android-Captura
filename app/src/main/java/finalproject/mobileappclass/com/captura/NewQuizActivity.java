@@ -91,8 +91,11 @@ public class NewQuizActivity extends AppCompatActivity {
         quizQuestionNumber++;
 
         //Randomly select a previous translation from the database of the target language
+        int max = translationList.size();
+        int min = 0;
         Random randomGenerator = new Random();
-        TranslationRequest selectedTranslation = translationList.get(randomGenerator.nextInt(translationList.size()));
+        int index  = randomGenerator.nextInt(max - min + 1) + min;
+        TranslationRequest selectedTranslation = translationList.get(index);
         String englishWord = selectedTranslation.getInputWord();
         String translatedWord = selectedTranslation.getTranslatedWord();
 
