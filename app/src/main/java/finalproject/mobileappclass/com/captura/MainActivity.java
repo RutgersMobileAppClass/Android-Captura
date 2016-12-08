@@ -65,8 +65,10 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         prefSingleton = PrefSingleton.getInstance();
         prefSingleton.init(getApplicationContext());
 
-        if(PrefSingleton.getInstance().readPreference("language") == null){
-            PrefSingleton.getInstance().writePreference("language", "en");
+        if(PrefSingleton.getInstance().readPreference("language_code") == null){
+
+            PrefSingleton.getInstance().writePreference("language_code", "en");
+            PrefSingleton.getInstance().writePreference("language_name", "English");
         }
         textToSpeech = new TextToSpeech(getApplicationContext(), this);
 
@@ -158,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             public void onClick(View view) {
                 CapturaDatabaseHelper capturaDatabaseHelper = CapturaDatabaseHelper.getInstance(getApplicationContext());
                 TranslationRequest translationRequest = new TranslationRequest("Hello", "Bonjour", "fr");
-                TranslationRequest translationRequest1 = new TranslationRequest("Hello", "Hola", "esp");
+                TranslationRequest translationRequest1 = new TranslationRequest("Hello", "Hola", "es");
 
                 QuizScore quizScore = new QuizScore(10, "Test timestamp", "fr");
                 QuizScore quizScore1 = new QuizScore(10, "Test timestamp2", "esp");
@@ -184,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                 }
 
                 ArrayList<TranslationRequest> requestArrayList = capturaDatabaseHelper.findTranslationRequestsByLanguage("fr");
-                ArrayList<QuizScore> quizScores = capturaDatabaseHelper.findQuizScoresByLanguage("esp");
+                ArrayList<QuizScore> quizScores = capturaDatabaseHelper.findQuizScoresByLanguage("es");
 
                 for(TranslationRequest t : requestArrayList) {
                     Log.v("AndroidCaptura", t.getInputWord() + " " + t.getTranslatedWord() + " " + t.getLanguageOfInterest());
@@ -319,9 +321,9 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
     }
 
     public void setTextToSpeechLanguage() {
-        if(textToSpeech.isLanguageAvailable(new Locale(prefSingleton.readPreference("language"))) == TextToSpeech.LANG_AVAILABLE) {
+        if(textToSpeech.isLanguageAvailable(new Locale(prefSingleton.readPreference("language_code"))) == TextToSpeech.LANG_AVAILABLE) {
             Toast.makeText(getApplicationContext(), "This language has TTS support", Toast.LENGTH_LONG).show();
-            textToSpeech.setLanguage(new Locale(prefSingleton.readPreference("language")));
+            textToSpeech.setLanguage(new Locale(prefSingleton.readPreference("language_code")));
         }
         else {
             Toast.makeText(getApplicationContext(), "This language does not have TTS support", Toast.LENGTH_LONG).show();
