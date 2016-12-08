@@ -26,6 +26,7 @@ import android.widget.Toast;
 import android.util.Log;
 import android.widget.Button;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
 
@@ -94,6 +95,33 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         });
 
 
+        final FloatingActionButton fabUpload = (FloatingActionButton) findViewById(R.id.fab_upload);
+        fabUpload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), IMG_UPLOAD_REQUEST_CODE);
+            }
+        });
+
+        final FloatingActionButton fabPicture = (FloatingActionButton) findViewById(R.id.fab_picture);
+        fabPicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (permissionsGranted) {
+                    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                        startActivityForResult(takePictureIntent, IMG_CAPTURE_REQUEST_CODE);
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(), "Need Permission To Use Camera", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+/*
         //If user wants to take an image from the camera
         takePhotoButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,6 +147,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                 startActivityForResult(Intent.createChooser(intent, "Select Picture"), IMG_UPLOAD_REQUEST_CODE);
             }
         });
+*/
 
         //test database stuff
         Button databaseButton = (Button) findViewById(R.id.db_button);
