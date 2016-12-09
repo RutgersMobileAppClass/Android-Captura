@@ -136,11 +136,6 @@ public class QuizActivity extends AppCompatActivity {
                 startActivity(intent);
                 return true;
 
-            case R.id.action_analytics:
-
-                Toast.makeText(QuizActivity.this, "Analytics!", Toast.LENGTH_SHORT).show();
-                return true;
-
             default:
                 return super.onOptionsItemSelected(item);
         }
