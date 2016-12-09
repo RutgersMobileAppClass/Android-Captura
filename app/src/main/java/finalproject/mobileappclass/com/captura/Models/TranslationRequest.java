@@ -9,15 +9,17 @@ public class TranslationRequest
 
     private String inputWord;
     private String translatedWord;
-    private String languageOfInterest;
+    private String languageCode;
+    private String languageName;
 
     public TranslationRequest () {}
 
-    public TranslationRequest(String inputWord, String translatedWord, String languageOfInterest)
+    public TranslationRequest(String inputWord, String translatedWord, String languageCode, String languageName)
     {
         this.inputWord = inputWord;
         this.translatedWord = translatedWord;
-        this.languageOfInterest = languageOfInterest;
+        this.languageCode = languageCode;
+        this.languageName = languageName;
     }
 
     public String getInputWord() {
@@ -36,12 +38,20 @@ public class TranslationRequest
         this.translatedWord = translatedWord;
     }
 
-    public String getLanguageOfInterest() {
-        return languageOfInterest;
+    public String getLanguageCode() {
+        return languageCode;
     }
 
-    public void setLanguageOfInterest(String languageOfInterest) {
-        this.languageOfInterest = languageOfInterest;
+    public void setLanguageCode(String languageCode) {
+        this.languageCode = languageCode;
+    }
+
+    public String getLanguageName() {
+        return languageName;
+    }
+
+    public void setLanguageName(String languageName) {
+        this.languageName = languageName;
     }
 
 }

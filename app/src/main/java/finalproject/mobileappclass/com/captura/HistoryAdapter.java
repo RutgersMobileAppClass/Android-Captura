@@ -3,6 +3,7 @@ package finalproject.mobileappclass.com.captura;
 import android.content.Context;
 import android.content.res.Resources;
 import android.speech.tts.TextToSpeech;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,12 +47,14 @@ public class HistoryAdapter extends ArrayAdapter<TranslationRequest> implements 
             TextView inputWord = (TextView) convertView.findViewById(R.id.FromWordTextView);
             TextView translatedWord = (TextView) convertView.findViewById(R.id.ToWordTextView);
             TextView languageOfInterest = (TextView) convertView.findViewById(R.id.ToLanguageTextView);
-
+            language = request.getLanguageName();
+            /*
             for(int i = 0; i < LanguageCodes.length; i++){
                 if(request.getLanguageOfInterest().equals(LanguageCodes[i])){
                     language = Languages[i];
                 }
             }
+            */
 
             if (inputWord != null) {
                 inputWord.setText(request.getInputWord());
@@ -70,7 +73,7 @@ public class HistoryAdapter extends ArrayAdapter<TranslationRequest> implements 
                 @Override
                 public void onClick(View v) {
                     String translatedWord = request.getTranslatedWord();
-                    languageCode = request.getLanguageOfInterest();
+                    languageCode = request.getLanguageCode();
                     setTextToSpeechLanguage();
 
                     if (translatedWord != null) {
@@ -95,11 +98,12 @@ public class HistoryAdapter extends ArrayAdapter<TranslationRequest> implements 
 
     public void setTextToSpeechLanguage()
     {
-        if(textToSpeech.isLanguageAvailable(new Locale(languageCode)) == TextToSpeech.LANG_AVAILABLE) {
+        if(textToSpeech.isLanguageAvailable(new Locale(languageCode)) == TextToSpeech.LANG_AVAILABLE)
+        {
             textToSpeech.setLanguage(new Locale(languageCode));
         }
-        else {
-            Toast.makeText(getContext(), "This language does not have TTS support", Toast.LENGTH_LONG).show();
+        else
+        {
             textToSpeech.setLanguage(Locale.US);
         }
     }

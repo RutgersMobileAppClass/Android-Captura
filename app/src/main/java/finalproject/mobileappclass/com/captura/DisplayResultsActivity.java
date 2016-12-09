@@ -62,8 +62,7 @@ public class DisplayResultsActivity extends AppCompatActivity {
         int request = intent.getIntExtra("request", 0);
         if(request == IMG_CAPTURE_REQUEST_CODE) {
             Bitmap bitmap = intent.getParcelableExtra("image");
-            Bitmap image = getResizedBitmap(bitmap, 1100, 1100);
-            imageView.setImageBitmap(image);
+            imageView.setImageBitmap(bitmap);
         } else if(request == IMG_UPLOAD_REQUEST_CODE) {
             Bundle extras = intent.getExtras();
             String filepath = (String) extras.get("imageFilepath");
@@ -79,7 +78,8 @@ public class DisplayResultsActivity extends AppCompatActivity {
                 try {
                     CapturaDatabaseHelper capturaDatabaseHelper = CapturaDatabaseHelper.getInstance(getApplicationContext());
                     TranslationRequest translationRequest = new TranslationRequest(tags.get(position).getTag(),
-                            tags.get(position).getTranslatedTag(), PrefSingleton.getInstance().readPreference("language_code"));
+                            tags.get(position).getTranslatedTag(), PrefSingleton.getInstance().readPreference("language_code"),
+                            PrefSingleton.getInstance().readPreference("language_name"));
                     capturaDatabaseHelper.insertTranslationRequest(translationRequest);
                     Toast.makeText(getApplicationContext(), "Storing result to database", Toast.LENGTH_SHORT).show();
                     Log.v("AndroidCaptura", "Inserted translation request...");

@@ -31,13 +31,16 @@ public class CapturaDatabaseHelper extends SQLiteOpenHelper
     private static final String COLUMN_REQUEST_ID = "requestId";
     private static final String COLUMN_INPUT_WORD = "inputWord";
     private static final String COLUMN_TRANSLATED_WORD = "translatedWord";
-    private static final String COLUMN_LAGUAGE_OF_INTEREST = "languageOfInterest";
+    private static final String COLUMN_LANGUAGE_CODE = "languageCode";
+    private static final String COLUMN_LANGUAGE_NAME = "languageName";
 
     //Quiz Scores Table Columns
     private static final String COLUMN_QUIZ_ID = "quizId";
     private static final String COLUMN_QUIZ_SCORES = "quizScores";
     private static final String COLUMN_TIME_STAMP = "timeStamp";
-    private static final String COLUMN_QUIZ_LANGUAGE = "languageOfInterest";
+    private static final String COLUMN_QUIZ_LANGUAGE_CODE = "languageCode";
+    private static final String COLUMN_QUIZ_LANGUAGE_NAME = "languageName";
+    private static final String COLUMN_TOTAL_QUESTIONS = "totalQuestions";
 
     //Singleton instance
     private static CapturaDatabaseHelper mInstance;
@@ -71,14 +74,17 @@ public class CapturaDatabaseHelper extends SQLiteOpenHelper
                     COLUMN_REQUEST_ID + " INTEGER PRIMARY KEY," +
                     COLUMN_INPUT_WORD + " TEXT," +
                     COLUMN_TRANSLATED_WORD + " TEXT," +
-                    COLUMN_LAGUAGE_OF_INTEREST + " TEXT" +
+                    COLUMN_LANGUAGE_CODE + " TEXT," +
+                    COLUMN_LANGUAGE_NAME + " TEXT" +
                 ")";
 
         String CREATE_TABLE_QUIZ_SCORES = "CREATE TABLE " + TABLE_QUIZ_SCORES +
                 "(" +
                     COLUMN_QUIZ_ID + " INTEGER PRIMARY KEY," +
                     COLUMN_QUIZ_SCORES + " INTEGER," +
-                    COLUMN_QUIZ_LANGUAGE + " TEXT," +
+                    COLUMN_TOTAL_QUESTIONS + " INTEGER," +
+                    COLUMN_QUIZ_LANGUAGE_CODE + " TEXT," +
+                    COLUMN_QUIZ_LANGUAGE_NAME + " TEXT," +
                     COLUMN_TIME_STAMP + " TEXT" +
                 ")";
 
@@ -113,7 +119,8 @@ public class CapturaDatabaseHelper extends SQLiteOpenHelper
                     TranslationRequest translationRequest = new TranslationRequest();
                     translationRequest.setInputWord(cursor.getString(cursor.getColumnIndex(COLUMN_INPUT_WORD)));
                     translationRequest.setTranslatedWord(cursor.getString(cursor.getColumnIndex(COLUMN_TRANSLATED_WORD)));
-                    translationRequest.setLanguageOfInterest(cursor.getString(cursor.getColumnIndex(COLUMN_LAGUAGE_OF_INTEREST)));
+                    translationRequest.setLanguageCode(cursor.getString(cursor.getColumnIndex(COLUMN_LANGUAGE_CODE)));
+                    translationRequest.setLanguageName(cursor.getString(cursor.getColumnIndex(COLUMN_LANGUAGE_NAME)));
                     translationRequests.add(translationRequest);
                 }while(cursor.moveToNext());
             }
@@ -149,7 +156,9 @@ public class CapturaDatabaseHelper extends SQLiteOpenHelper
                 {
                     QuizScore quizScore = new QuizScore();
                     quizScore.setQuizScore(cursor.getInt(cursor.getColumnIndex(COLUMN_QUIZ_SCORES)));
-                    quizScore.setLanguageOfInterest(cursor.getString(cursor.getColumnIndex(COLUMN_QUIZ_LANGUAGE)));
+                    quizScore.setNumQuestions(cursor.getInt(cursor.getColumnIndex(COLUMN_TOTAL_QUESTIONS)));
+                    quizScore.setLanguageCode(cursor.getString(cursor.getColumnIndex(COLUMN_QUIZ_LANGUAGE_CODE)));
+                    quizScore.setLanguageName(cursor.getString(cursor.getColumnIndex(COLUMN_QUIZ_LANGUAGE_NAME)));
                     quizScore.setTimeStamp(cursor.getString(cursor.getColumnIndex(COLUMN_TIME_STAMP)));
                     quizScores.add(quizScore);
                 }while(cursor.moveToNext());
@@ -180,11 +189,12 @@ public class CapturaDatabaseHelper extends SQLiteOpenHelper
             ContentValues contentValues = new ContentValues();
             contentValues.put(COLUMN_INPUT_WORD, translationRequest.getInputWord());
             contentValues.put(COLUMN_TRANSLATED_WORD, translationRequest.getTranslatedWord());
-            contentValues.put(COLUMN_LAGUAGE_OF_INTEREST, translationRequest.getLanguageOfInterest());
+            contentValues.put(COLUMN_LANGUAGE_CODE, translationRequest.getLanguageCode());
+            contentValues.put(COLUMN_LANGUAGE_NAME, translationRequest.getLanguageName());
 
             Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_TRANSLATION_REQUESTS + " WHERE " +
-                    COLUMN_INPUT_WORD + "='" + translationRequest.getInputWord() + "' AND " + COLUMN_LAGUAGE_OF_INTEREST
-                    + "='" + translationRequest.getLanguageOfInterest()+"'", null);
+                    COLUMN_INPUT_WORD + "='" + translationRequest.getInputWord() + "' AND " + COLUMN_LANGUAGE_CODE
+                    + "='" + translationRequest.getLanguageCode()+"'", null);
 
             if(cursor.getCount() == 0)
             {
@@ -210,8 +220,11 @@ public class CapturaDatabaseHelper extends SQLiteOpenHelper
         {
             ContentValues contentValues = new ContentValues();
             contentValues.put(COLUMN_QUIZ_SCORES, quizScore.getQuizScore());
-            contentValues.put(COLUMN_QUIZ_LANGUAGE, quizScore.getLanguageOfInterest());
+            contentValues.put(COLUMN_TOTAL_QUESTIONS, quizScore.getNumQuestions());
+            contentValues.put(COLUMN_QUIZ_LANGUAGE_CODE, quizScore.getLanguageCode());
+            contentValues.put(COLUMN_QUIZ_LANGUAGE_NAME, quizScore.getLanguageName());
             contentValues.put(COLUMN_TIME_STAMP, quizScore.getTimeStamp());
+
 
             db.insertOrThrow(TABLE_QUIZ_SCORES, null, contentValues);
             db.setTransactionSuccessful();
@@ -230,7 +243,7 @@ public class CapturaDatabaseHelper extends SQLiteOpenHelper
     {
         SQLiteDatabase db = getReadableDatabase();
         ArrayList<TranslationRequest> resultList = new ArrayList<TranslationRequest>();
-        Cursor cursor = db.rawQuery("SELECT * FROM "+TABLE_TRANSLATION_REQUESTS+" WHERE " + COLUMN_LAGUAGE_OF_INTEREST
+        Cursor cursor = db.rawQuery("SELECT * FROM "+TABLE_TRANSLATION_REQUESTS+" WHERE " + COLUMN_LANGUAGE_CODE
                 + "= ? ORDER BY " + COLUMN_REQUEST_ID + " DESC" , new String[]{language});
         db.beginTransaction();
         try
@@ -242,7 +255,8 @@ public class CapturaDatabaseHelper extends SQLiteOpenHelper
                     TranslationRequest translationRequest = new TranslationRequest();
                     translationRequest.setInputWord(cursor.getString(cursor.getColumnIndex(COLUMN_INPUT_WORD)));
                     translationRequest.setTranslatedWord(cursor.getString(cursor.getColumnIndex(COLUMN_TRANSLATED_WORD)));
-                    translationRequest.setLanguageOfInterest(cursor.getString(cursor.getColumnIndex(COLUMN_LAGUAGE_OF_INTEREST)));
+                    translationRequest.setLanguageCode(cursor.getString(cursor.getColumnIndex(COLUMN_LANGUAGE_CODE)));
+                    translationRequest.setLanguageName(cursor.getString(cursor.getColumnIndex(COLUMN_LANGUAGE_NAME)));
                     resultList.add(translationRequest);
                 } while(cursor.moveToNext());
             }
@@ -267,7 +281,7 @@ public class CapturaDatabaseHelper extends SQLiteOpenHelper
     {
         SQLiteDatabase db = getReadableDatabase();
         ArrayList<QuizScore> resultList = new ArrayList<QuizScore>();
-        Cursor cursor = db.rawQuery("SELECT * FROM "+TABLE_QUIZ_SCORES+" WHERE " + COLUMN_QUIZ_LANGUAGE
+        Cursor cursor = db.rawQuery("SELECT * FROM "+TABLE_QUIZ_SCORES+" WHERE " + COLUMN_QUIZ_LANGUAGE_CODE
             + "= ?", new String[]{language});
         db.beginTransaction();
         try
@@ -278,8 +292,10 @@ public class CapturaDatabaseHelper extends SQLiteOpenHelper
                 {
                     QuizScore quizScore = new QuizScore();
                     quizScore.setQuizScore(cursor.getInt(cursor.getColumnIndex(COLUMN_QUIZ_SCORES)));
-                    quizScore.setLanguageOfInterest(cursor.getString(cursor.getColumnIndex(COLUMN_QUIZ_LANGUAGE)));
+                    quizScore.setLanguageCode(cursor.getString(cursor.getColumnIndex(COLUMN_QUIZ_LANGUAGE_CODE)));
+                    quizScore.setLanguageName(cursor.getString(cursor.getColumnIndex(COLUMN_QUIZ_LANGUAGE_NAME)));
                     quizScore.setTimeStamp(cursor.getString(cursor.getColumnIndex(COLUMN_TIME_STAMP)));
+                    quizScore.setNumQuestions(cursor.getInt(cursor.getColumnIndex(COLUMN_TOTAL_QUESTIONS)));
                     resultList.add(quizScore);
                 }while(cursor.moveToNext());
             }
@@ -299,4 +315,44 @@ public class CapturaDatabaseHelper extends SQLiteOpenHelper
         }
         return resultList;
     }
+
+    public String findTranslationForInputWord(String inputWord, String currentLanguage) {
+        SQLiteDatabase db = getReadableDatabase();
+        Log.v("DBHelper", "input word is: " + inputWord);
+        Cursor cursor = db.rawQuery("SELECT *" + " FROM " + TABLE_TRANSLATION_REQUESTS + " WHERE " + COLUMN_INPUT_WORD
+                + "= ? " + "AND " + COLUMN_LANGUAGE_CODE + " = ? ", new String[]{inputWord, currentLanguage});
+        db.beginTransaction();
+        String result = "";
+        try {
+            if(cursor.moveToFirst())
+            {
+                do
+                {
+                    TranslationRequest translationRequest = new TranslationRequest();
+                    translationRequest.setInputWord(cursor.getString(cursor.getColumnIndex(COLUMN_INPUT_WORD)));
+                    translationRequest.setTranslatedWord(cursor.getString(cursor.getColumnIndex(COLUMN_TRANSLATED_WORD)));
+                    translationRequest.setLanguageCode(cursor.getString(cursor.getColumnIndex(COLUMN_LANGUAGE_CODE)));
+                    translationRequest.setLanguageName(cursor.getString(cursor.getColumnIndex(COLUMN_LANGUAGE_NAME)));
+                    result = translationRequest.getTranslatedWord();
+                } while(cursor.moveToNext());
+            }
+            db.setTransactionSuccessful();
+
+        }
+        catch(Exception e)
+        {
+            Log.e("AndroidCaptura", e.getMessage());
+        }
+        finally
+        {
+            if(cursor != null && !(cursor.isClosed()))
+            {
+                cursor.close();
+            }
+            db.endTransaction();
+        }
+        return result;
+    }
+
+
 }
