@@ -22,9 +22,11 @@ Captura provides the following features: <br>
 ## Relevant Libraries
 The following libraries were used in implementing this project: <br>
 <ol>
-<li>Google CloudVision: https://cloud.google.com/vision/ </li>
-<li>Android TTS: https://developer.android.com/reference/android/speech/tts/TextToSpeech.html </li>
-<li>Google Translate: https://cloud.google.com/translate/ </li>
+<li>Google CloudVision : https://cloud.google.com/vision/ </li>
+<li>Android TTS : https://developer.android.com/reference/android/speech/tts/TextToSpeech.html </li>
+<li>Google Translate : https://cloud.google.com/translate/ </li>
+<li>Bottom Nav: https://github.com/roughike/BottomBar </li>
+<li> FAB :https://github.com/futuresimple/android-floating-action-button </li>
 </ol>
 
 ## Project Status
