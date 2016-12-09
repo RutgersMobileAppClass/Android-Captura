@@ -69,50 +69,6 @@ public class HistoryActivity extends AppCompatActivity{
             }
         });
 
-        final FloatingActionButton button = (FloatingActionButton) findViewById(R.id.setter);
-        button.setIcon(R.drawable.ic_visibility_off);
-
-        //Study Mode Toggle
-        findViewById(R.id.setter).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-
-                if(!studyMode){
-                    studyMode = true;
-                    button.setIcon(R.drawable.ic_visibility_on);
-                    Toast.makeText(HistoryActivity.this, "Study Mode On!", Toast.LENGTH_SHORT).show();
-                    for(int i = 0; i < requests.size(); i++) {
-                        TextView hide = (TextView) historyOfRequests.getChildAt(i).findViewById(R.id.ToWordTextView);
-                        hide.setVisibility(View.INVISIBLE);
-                    }
-
-                    historyOfRequests.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-                            TextView show = (TextView) historyOfRequests.getChildAt(position).findViewById(R.id.ToWordTextView);
-                            int i = show.getVisibility();
-                            if(i == 4) {
-                                show.setVisibility(View.VISIBLE);
-                            }else{
-                                show.setVisibility(View.INVISIBLE);
-                            }
-
-                        }
-                    });
-
-                }else{
-                    studyMode = false;
-                    button.setIcon(R.drawable.ic_visibility_off);
-                    Toast.makeText(HistoryActivity.this, "Study Mode Off!", Toast.LENGTH_SHORT).show();
-                    for(int i = 0; i < requests.size(); i++) {
-                        TextView hide = (TextView) historyOfRequests.getChildAt(i).findViewById(R.id.ToWordTextView);
-                        hide.setVisibility(View.VISIBLE);
-                    }
-                }
-            }
-        });
-
     }
 
     @Override
@@ -151,6 +107,10 @@ public class HistoryActivity extends AppCompatActivity{
         protected void onPostExecute(ArrayList<TranslationRequest> dbLocations) {
             requests.clear();
             requests.addAll(dbLocations);
+            for(TranslationRequest t : requests)
+            {
+                Log.v("AndroidCaptura", t.getInputWord() + " " + t.getLanguageName());
+            }
             adapter.notifyDataSetChanged();
         }
     }

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_new_quiz"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="finalproject.mobileappclass.com.captura.NewQuizActivity"
+    android:padding="15dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:paddingBottom="75dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1/10"
+            android:textSize="30dp"
+            android:paddingRight="10dp"
+            android:id="@+id/newQuizQuestionNumberTextView"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="English"
+            android:textSize="20dp"
+            android:paddingRight="10dp"
+            android:id="@+id/newQuizFromLanguageTextView"/>
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            app:srcCompat="@drawable/ic_swap_horiz_black_24dp"
+            android:id="@+id/newQuizConversionArrowImageView" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="To Language"
+            android:textSize="20dp"
+            android:paddingLeft="10dp"
+            android:id="@+id/newQuizToLanguageTextViewTop"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="English:"
+            android:paddingRight="10dp"
+            android:textSize="25dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="English Word"
+            android:textSize="25dp"
+            android:id="@+id/newQuizEnglishWordTextView"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="To Language:"
+            android:paddingRight="10dp"
+            android:textSize="25dp"
+            android:id="@+id/newQuizToLanguageTextViewBottom"/>
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Enter translation..."
+            android:textSize="25dp"
+            android:id="@+id/newQuizTranslationEditText"/>
+
+    </LinearLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Submit Answer"
+        android:textSize="20dp"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/newQuizSubmitButton"/>
+
+</LinearLayout>

@@ -7,16 +7,20 @@ package finalproject.mobileappclass.com.captura.Models;
 public class QuizScore
 {
     private int quizScore;
+    private int numQuestions;
     private String timeStamp;
-    private String languageOfInterest;
+    private String languageCode;
+    private String languageName;
 
     public QuizScore () {}
 
-    public QuizScore(int quizScore , String timeStamp, String languageOfInterest)
+    public QuizScore(int quizScore , String timeStamp, String languageCode, int numQuestions, String languageName)
     {
         this.quizScore = quizScore;
         this.timeStamp = timeStamp;
-        this.languageOfInterest = languageOfInterest;
+        this.languageCode = languageCode;
+        this.numQuestions = numQuestions;
+        this.languageName = languageName;
     }
 
     public int getQuizScore() {
@@ -35,11 +39,27 @@ public class QuizScore
         this.timeStamp = timeStamp;
     }
 
-    public String getLanguageOfInterest() {
-        return languageOfInterest;
+    public String getLanguageCode() {
+        return languageCode;
     }
 
-    public void setLanguageOfInterest(String languageOfInterest) {
-        this.languageOfInterest = languageOfInterest;
+    public void setLanguageCode(String languageCode) {
+        this.languageCode = languageCode;
+    }
+
+    public String getLanguageName() {
+        return languageName;
+    }
+
+    public void setLanguageName(String languageName) {
+        this.languageName = languageName;
+    }
+
+    public int getNumQuestions() {
+        return numQuestions;
+    }
+
+    public void setNumQuestions(int numQuestions) {
+        this.numQuestions = numQuestions;
     }
 }
